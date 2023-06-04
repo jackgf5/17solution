@@ -1,5 +1,6 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
+import ToasterProvider from "@/providers/toastprovider"
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <div className="flex-1">{children}</div>
           </div>
           <TailwindIndicator />
+          <ToasterProvider />
         </body>
       </html>
     </>

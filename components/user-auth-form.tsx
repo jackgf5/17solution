@@ -3,6 +3,9 @@
 import * as React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { toast } from "react-hot-toast"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -17,14 +20,30 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [showPassword, setShowPassword] = useState<Boolean>()
   const router = useRouter()
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault()
-    setIsLoading(true)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FieldValues>({
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  })
 
-    setTimeout(() => {
-      setIsLoading(false)
-      router.push("/home")
-    }, 1000)
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    setIsLoading(true)
+    signIn("credentials", {
+      redirect: false,
+      username: data.username,
+      password: data.password,
+    })
+      .then((callback) => {
+        if (callback?.ok && !callback.error) toast.success("Logged In")
+        if (callback?.error) toast.error(callback.error)
+        else toast.error("Error")
+      })
+      .finally(() => setIsLoading(false))
   }
 
   const handlePasswordVisibility = () => {
@@ -33,7 +52,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-2">
           <div className="grid gap-2">
             <Label className="sr-only" htmlFor="username">
@@ -47,6 +66,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoComplete="username"
               autoCorrect="off"
               disabled={isLoading}
+              {...register("username", { required: "Username is required" })}
             />
             <Label className="sr-only" htmlFor="password">
               Password
@@ -60,11 +80,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 autoComplete="password"
                 autoCorrect="off"
                 disabled={isLoading}
+                {...register("password", { required: "Password is required" })}
               />
               <div
                 onClick={handlePasswordVisibility}
                 className={cn(
-                  "absolute top-1/2  transform  right-4 -translate-y-1/2 cursor-pointer",
+                  "absolute top-1/2  transform  right-4 -translate-y-1/2 cursor-pointer transition",
                   showPassword ? "text-blue-500" : "text-black"
                 )}
               >
