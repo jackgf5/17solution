@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 import Link from "next/link"
+import bcrypt from "bcrypt"
 
 import { UserAuthForm } from "@/components/user-auth-form"
 

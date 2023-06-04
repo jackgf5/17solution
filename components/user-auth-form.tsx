@@ -39,9 +39,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       password: data.password,
     })
       .then((callback) => {
+        console.log(callback)
         if (callback?.ok && !callback.error) toast.success("Logged In")
         if (callback?.error) toast.error(callback.error)
-        else toast.error("Error")
       })
       .finally(() => setIsLoading(false))
   }
