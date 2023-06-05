@@ -7,12 +7,19 @@ import { columns } from "./column"
 import { DataTable } from "./data-table"
 
 const getData = async () => {
-  const users = await prisma.user.findMany({})
+  const users = await prisma.user.findMany({
+    where: {
+      role: {
+        not: "ADMIN",
+      },
+    },
+  })
   return users
 }
 
 const page = async () => {
   const data = await getData()
+
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 p-20 md:flex">
       <div className="flex items-center justify-between space-y-2">

@@ -61,7 +61,7 @@ function capitalizeText(text: string) {
   return capitalizedText
 }
 const AddAccount = () => {
-  const [selectedCheckbox, setSelectedCheckbox] = useState("organisation")
+  const [selectedCheckbox, setSelectedCheckbox] = useState("organization")
   const [isLoading, setIsLoading] = useState(false)
   const [pageNumber, setPageNumber] = useState(0)
   const [createdUser, setCreatedUser] = useState<User>()
@@ -137,16 +137,16 @@ const AddAccount = () => {
               <div className="flex flex-col flex-4 gap-4">
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="organisation"
-                    onCheckedChange={() => setSelectedCheckbox("organisation")}
-                    checked={selectedCheckbox === "organisation"}
+                    id="organization"
+                    onCheckedChange={() => setSelectedCheckbox("organization")}
+                    checked={selectedCheckbox === "organization"}
                     disabled={isLoading}
                   />
                   <label
-                    htmlFor="organisation"
+                    htmlFor="organization"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    Organisation
+                    Organization
                   </label>
                 </div>
 

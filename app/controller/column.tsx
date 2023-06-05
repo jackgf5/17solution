@@ -27,7 +27,7 @@ export const columns: ColumnDef<User>[] = [
     header: "Username",
   },
   {
-    accessorKey: "password",
+    accessorKey: "hashedPassword",
     header: "Password",
   },
   {
