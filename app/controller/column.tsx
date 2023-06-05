@@ -1,7 +1,8 @@
 "use client"
 
+import { User } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
+import { Copy, MoreHorizontal, Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -15,12 +16,6 @@ import {
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type User = {
-  id: string
-  name: string
-  username: string
-  password: string
-}
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -53,11 +48,15 @@ export const columns: ColumnDef<User>[] = [
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(payment.id)}
             >
-              Copy payment ID
+              <Copy className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+              Copy Details
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+
+            <DropdownMenuItem>
+              <Trash className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+              Delete Account
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

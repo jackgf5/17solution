@@ -36,12 +36,9 @@ model Session {
 
 model User {
   id             String    @id @default(cuid())
-  name           String?
+  name           String
   username       String    @unique
   role           Role      @default(USER)
-  email          String?   @unique
-  emailVerified  DateTime?
-  image          String?
   hashedPassword String?
   accounts       Account[]
   sessions       Session[]
@@ -57,5 +54,7 @@ model VerificationToken {
 
 enum Role {
   USER
+  ORGANIZATION
   ADMIN
+  EDUCATIONAL
 }
