@@ -1,6 +1,4 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { Role } from "@prisma/client"
-import bcrypt from "bcrypt"
 import NextAuth, { AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
@@ -30,10 +28,7 @@ export const authOptions: AuthOptions = {
           throw new Error("Invalid Credentials")
         }
 
-        const isCorrectPassword = await bcrypt.compare(
-          credentials.password,
-          user.hashedPassword
-        )
+        const isCorrectPassword = credentials.password === user.hashedPassword
 
         if (!isCorrectPassword) {
           throw new Error("Invalid Credentials")
@@ -49,6 +44,7 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.role = user.role
         token.id = user.id
+        token.username = user.username
       }
 
       return token
@@ -58,6 +54,7 @@ export const authOptions: AuthOptions = {
       if (token && session.user) {
         session.user.role = token.role
         session.user.id = token.id
+        session.user.username = token.username
       }
 
       return session

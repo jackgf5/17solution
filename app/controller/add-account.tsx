@@ -61,7 +61,7 @@ function capitalizeText(text: string) {
   return capitalizedText
 }
 const AddAccount = () => {
-  const [selectedCheckbox, setSelectedCheckbox] = useState("organization")
+  const [selectedCheckbox, setSelectedCheckbox] = useState("ORGANIZATION")
   const [isLoading, setIsLoading] = useState(false)
   const [pageNumber, setPageNumber] = useState(0)
   const [createdUser, setCreatedUser] = useState<User>()
@@ -87,7 +87,7 @@ const AddAccount = () => {
     const user = {
       name: capitalizeText(data.name),
       type: selectedCheckbox,
-      username: `${data.username.toLowerCase()}@${selectedCheckbox}`,
+      username: `${data.username.toLowerCase()}@${data.name.toLowerCase()}`,
       password: data.password,
     }
 
@@ -115,6 +115,12 @@ const AddAccount = () => {
     defaultValue: "",
   })
 
+  const name = useWatch({
+    control,
+    name: "name",
+    defaultValue: "",
+  })
+
   const handleChooseContent = () => {
     if (pageNumber === 0) {
       return (
@@ -138,8 +144,8 @@ const AddAccount = () => {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="organization"
-                    onCheckedChange={() => setSelectedCheckbox("organization")}
-                    checked={selectedCheckbox === "organization"}
+                    onCheckedChange={() => setSelectedCheckbox("ORGANIZATION")}
+                    checked={selectedCheckbox === "ORGANIZATION"}
                     disabled={isLoading}
                   />
                   <label
@@ -153,8 +159,8 @@ const AddAccount = () => {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="educational"
-                    onCheckedChange={() => setSelectedCheckbox("educational")}
-                    checked={selectedCheckbox === "educational"}
+                    onCheckedChange={() => setSelectedCheckbox("EDUCATIONAL")}
+                    checked={selectedCheckbox === "EDUCATIONAL"}
                     disabled={isLoading}
                   />
                   <label
@@ -183,7 +189,7 @@ const AddAccount = () => {
                   placeholder="Username"
                 />
                 <div className="text-sm text-muted-foreground">
-                  {`${username.toLowerCase()}@${selectedCheckbox}`}
+                  {`${username.toLowerCase()}@${name.toLowerCase()}`}
                 </div>
                 <div className="text-sm text-muted-foreground lowercase text-rose-500">
                   {errors["username"]?.message?.toString() ===

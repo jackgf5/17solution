@@ -85,15 +85,16 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
 
     const user = {
       name: capitalizeText(data.name),
-      username: `${data.username.toLowerCase()}@${currentEducation}`,
+      username: `${data.username.toLowerCase()}@${currentEducation.toLowerCase()}`,
       password: data.password,
+      currentEducation,
     }
 
     axios
-      .post("/api/auth/register", user)
+      .post("/api/auth/educational/createteacher", user)
       .then((response) => {
-        if (response.status !== 200) throw new Error("User Not Created")
-        toast.success("User Created")
+        if (response.status !== 200) throw new Error("Teacher Not Created")
+        toast.success("Teacher Created")
         reset()
         setCreatedUser(response.data.user)
         setPageNumber(1)

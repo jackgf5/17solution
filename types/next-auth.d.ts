@@ -3,6 +3,7 @@ import { DefaultSession, DefaultUser } from "next-auth"
 
 interface IUser extends DefaultUser {
   role?: Role
+  username: string
 }
 declare module "next-auth" {
   interface User extends IUser {}

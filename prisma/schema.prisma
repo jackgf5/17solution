@@ -35,13 +35,29 @@ model Session {
 }
 
 model User {
-  id             String    @id @default(cuid())
+  id             String        @id @default(cuid())
   name           String
-  username       String    @unique
-  role           Role      @default(USER)
+  username       String        @unique
+  role           Role          @default(USER)
   hashedPassword String?
   accounts       Account[]
   sessions       Session[]
+  educational    Educational?  @relation(fields: [educationalId], references: [id])
+  educationalId  String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+}
+
+model Educational {
+  id    String @id @default(cuid())
+  name  String @unique
+  users User[]
+}
+
+model Organization {
+  id    String @id @default(cuid())
+  name  String @unique
+  users User[]
 }
 
 model VerificationToken {
@@ -57,4 +73,6 @@ enum Role {
   ORGANIZATION
   ADMIN
   EDUCATIONAL
+  TEACHER
+  STUDENT
 }

@@ -1,4 +1,6 @@
 import {
+  EyeIcon,
+  EyeOff,
   Fingerprint,
   Loader2,
   LucideProps,
@@ -18,6 +20,8 @@ export const Icons = {
   twitter: Twitter,
   spinner: Loader2,
   user: UserPlus,
+  eyeOpen: EyeIcon,
+  eyeClosed: EyeOff,
 
   logo: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>

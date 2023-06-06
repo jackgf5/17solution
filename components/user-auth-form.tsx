@@ -41,7 +41,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       .then((callback) => {
         if (callback?.ok && !callback.error) {
           toast.success("Logged In")
-          router.push("/controller")
+          router.push("/")
         }
         if (callback?.error) toast.error(callback.error)
       })
@@ -91,7 +91,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                   showPassword ? "text-blue-500" : "text-black"
                 )}
               >
-                <Icons.fingerprint className=" h-4 w-4" />
+                {showPassword ? (
+                  <Icons.eyeClosed className="h-4 w-4 transition" />
+                ) : (
+                  <Icons.eyeOpen className="h-4 w-4 transition" />
+                )}
               </div>
             </div>
           </div>
