@@ -128,7 +128,7 @@ const AddAccount = () => {
           <AlertDialogHeader>
             <AlertDialogTitle className=" mb-4">Add An Admin</AlertDialogTitle>
             <div className="flex flex-col gap-8">
-              <div className="flex gap-2 flex-col">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="name">Company Name</Label>
                 <Input
                   className="capitalize"
@@ -140,7 +140,7 @@ const AddAccount = () => {
                 />
               </div>
 
-              <div className="flex flex-col flex-4 gap-4">
+              <div className="flex-4 flex flex-col gap-4">
                 {/*<div className="flex items-center space-x-2">
                   <Checkbox
                     id="organization"
@@ -172,7 +172,7 @@ const AddAccount = () => {
                 </div>
               </div>
 
-              <div className="flex gap-2 flex-col">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="username">Username</Label>
                 <Input
                   disabled={isLoading}
@@ -199,7 +199,7 @@ const AddAccount = () => {
                 </div>
               </div>
 
-              <div className="flex gap-2 flex-col">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="flex gap-2">
                   <Input
@@ -294,7 +294,7 @@ const AddAccount = () => {
   return (
     <div className="flex items-center space-x-2">
       <AlertDialog>
-        <AlertDialogTrigger className="inline-flex h-9 px-3 bg-primary text-primary-foreground hover:bg-primary/90 items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background">
+        <AlertDialogTrigger className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
           <Icons.user className="mr-2 h-4 w-4" />
           Add Account
         </AlertDialogTrigger>

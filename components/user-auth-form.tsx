@@ -87,15 +87,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               <div
                 onClick={handlePasswordVisibility}
                 className={cn(
-                  "absolute right-4  top-1/2  -translate-y-1/2 transform cursor-pointer transition",
+                  "absolute right-4  top-1/2  -translate-y-1/2 cursor-pointer transition",
                   showPassword ? "text-blue-500" : "text-black"
                 )}
               >
-                {showPassword ? (
-                  <Icons.eyeClosed className="h-4 w-4 transition" />
-                ) : (
-                  <Icons.eyeOpen className="h-4 w-4 transition" />
-                )}
+                <Icons.fingerprint className="h-4 w-4 transition" />
               </div>
             </div>
           </div>

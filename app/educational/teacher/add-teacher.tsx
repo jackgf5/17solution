@@ -152,7 +152,7 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
                 <div className="text-sm text-muted-foreground">
                   {`${username.toLowerCase()}@${currentEducation.toLowerCase()}`}
                 </div>
-                <div className="text-sm lowercase text-muted-foreground text-rose-500">
+                <div className="text-sm lowercase  text-rose-500">
                   {errors["username"]?.message?.toString() ===
                     "Spaces are not allowed in the username" && (
                     <div>{errors["username"]?.message.toString()}</div>
