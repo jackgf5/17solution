@@ -1,3 +1,5 @@
+"use client"
+
 import { useRouter } from "next/navigation"
 import { User } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
@@ -43,7 +45,11 @@ const ActionsCell = ({ row }: any) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(user.id)}
+          onClick={() =>
+            navigator.clipboard.writeText(
+              `username:${user.username},password:${user.hashedPassword}`
+            )
+          }
         >
           <Copy className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
           Copy Details

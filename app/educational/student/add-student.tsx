@@ -207,36 +207,59 @@ const AddStudent = ({ currentEducation }: { currentEducation: string }) => {
       return (
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>User Data</AlertDialogTitle>
+            <AlertDialogTitle>User</AlertDialogTitle>
             <div className="flex flex-col gap-2">
-              <div className="flex items-center space-x-4 rounded-md p-2 hover:bg-accent hover:text-accent-foreground">
-                <UserIcon className="h-5 w-5" />
-                <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">Name</p>
-                  <p className="text-sm text-muted-foreground">
-                    {createdUser.name}
-                  </p>
+              <div
+                onClick={() => navigator.clipboard.writeText(createdUser.name)}
+                className="flex items-center justify-between space-x-4 rounded-md p-2 hover:bg-accent hover:text-accent-foreground"
+              >
+                <div className="flex items-center space-x-4">
+                  <UserIcon className="h-5 w-5" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Name</p>
+                    <p className="text-sm text-muted-foreground">
+                      {createdUser.name}
+                    </p>
+                  </div>
                 </div>
+                <Copy className=" mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
               </div>
 
-              <div className="flex items-center space-x-4 rounded-md p-2 hover:bg-accent hover:text-accent-foreground">
-                <Contact className="h-5 w-5" />
-                <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">Username</p>
-                  <p className="text-sm text-muted-foreground">
-                    {createdUser.username}
-                  </p>
+              <div
+                onClick={() =>
+                  navigator.clipboard.writeText(createdUser.username)
+                }
+                className="flex items-center justify-between  space-x-4 rounded-md  p-2 hover:bg-accent hover:text-accent-foreground"
+              >
+                <div className="flex items-center space-x-4">
+                  <Contact className="h-5 w-5" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Username</p>
+                    <p className="text-sm text-muted-foreground">
+                      {createdUser.username}
+                    </p>
+                  </div>
                 </div>
+                <Copy className=" mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
               </div>
 
-              <div className="flex items-center space-x-4 rounded-md p-2 hover:bg-accent hover:text-accent-foreground">
-                <Key className="h-5 w-5" />
-                <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">Password</p>
-                  <p className="text-[10px] text-muted-foreground">
-                    {createdUser.hashedPassword}
-                  </p>
+              <div
+                onClick={() =>
+                  createdUser.hashedPassword &&
+                  navigator.clipboard.writeText(createdUser.hashedPassword)
+                }
+                className="flex items-center justify-between space-x-4 rounded-md p-2 hover:bg-accent hover:text-accent-foreground"
+              >
+                <div className="flex items-center space-x-4">
+                  <Key className="h-5 w-5" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Password</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {createdUser.hashedPassword}
+                    </p>
+                  </div>
                 </div>
+                <Copy className=" mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
               </div>
             </div>
           </AlertDialogHeader>
