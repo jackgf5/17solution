@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import { redirect } from "next/navigation"
 import { getServerSession } from "next-auth/next"
 
+import prisma from "@/lib/prisma"
+
 import { authOptions } from "../api/auth/[...nextauth]/route"
 import { UserNav } from "../controller/user-nav"
 import MainStudent from "./student/main"
