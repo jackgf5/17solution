@@ -61,7 +61,7 @@ function capitalizeText(text: string) {
   return capitalizedText
 }
 const AddAccount = () => {
-  const [selectedCheckbox, setSelectedCheckbox] = useState("ORGANIZATION")
+  const [selectedCheckbox, setSelectedCheckbox] = useState("EDUCATIONAL")
   const [isLoading, setIsLoading] = useState(false)
   const [pageNumber, setPageNumber] = useState(0)
   const [createdUser, setCreatedUser] = useState<User>()
@@ -126,10 +126,10 @@ const AddAccount = () => {
       return (
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Add An Admin</AlertDialogTitle>
+            <AlertDialogTitle className=" mb-4">Add An Admin</AlertDialogTitle>
             <div className="flex flex-col gap-8">
-              <div>
-                <Label htmlFor="name">Name</Label>
+              <div className="flex gap-2 flex-col">
+                <Label htmlFor="name">Company Name</Label>
                 <Input
                   className="capitalize"
                   {...register("name", { required: "Name is required" })}
@@ -141,7 +141,7 @@ const AddAccount = () => {
               </div>
 
               <div className="flex flex-col flex-4 gap-4">
-                <div className="flex items-center space-x-2">
+                {/*<div className="flex items-center space-x-2">
                   <Checkbox
                     id="organization"
                     onCheckedChange={() => setSelectedCheckbox("ORGANIZATION")}
@@ -154,7 +154,7 @@ const AddAccount = () => {
                   >
                     Organization
                   </label>
-                </div>
+                </div> */}
 
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -191,7 +191,7 @@ const AddAccount = () => {
                 <div className="text-sm text-muted-foreground">
                   {`${username.toLowerCase()}@${name.toLowerCase()}`}
                 </div>
-                <div className="text-sm text-muted-foreground lowercase text-rose-500">
+                <div className="text-sm  lowercase text-rose-500">
                   {errors["username"]?.message?.toString() ===
                     "Spaces are not allowed in the username" && (
                     <div>{errors["username"]?.message.toString()}</div>

@@ -119,10 +119,10 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
       return (
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Add A Teacher</AlertDialogTitle>
+            <AlertDialogTitle className=" mb-4">Add A Teacher</AlertDialogTitle>
             <div className="flex flex-col gap-8">
-              <div>
-                <Label htmlFor="name">Name</Label>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="name">Teacher Name</Label>
                 <Input
                   className="capitalize"
                   {...register("name", { required: "Name is required" })}
@@ -133,7 +133,7 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
                 />
               </div>
 
-              <div className="flex gap-2 flex-col">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="username">Username</Label>
                 <Input
                   disabled={isLoading}
@@ -150,9 +150,9 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
                   placeholder="Username"
                 />
                 <div className="text-sm text-muted-foreground">
-                  {`${username.toLowerCase()}@${currentEducation}`}
+                  {`${username.toLowerCase()}@${currentEducation.toLowerCase()}`}
                 </div>
-                <div className="text-sm text-muted-foreground lowercase text-rose-500">
+                <div className="text-sm lowercase text-muted-foreground text-rose-500">
                   {errors["username"]?.message?.toString() ===
                     "Spaces are not allowed in the username" && (
                     <div>{errors["username"]?.message.toString()}</div>
@@ -160,7 +160,7 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
                 </div>
               </div>
 
-              <div className="flex gap-2 flex-col">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="flex gap-2">
                   <Input
@@ -255,7 +255,7 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
   return (
     <div className="flex items-center space-x-2">
       <AlertDialog>
-        <AlertDialogTrigger className="inline-flex h-9 px-3 bg-primary text-primary-foreground hover:bg-primary/90 items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background">
+        <AlertDialogTrigger className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
           <Icons.user className="mr-2 h-4 w-4" />
           Add Teacher
         </AlertDialogTrigger>

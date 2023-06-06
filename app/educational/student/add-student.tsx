@@ -119,10 +119,10 @@ const AddStudent = ({ currentEducation }: { currentEducation: string }) => {
       return (
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Add A Student</AlertDialogTitle>
+            <AlertDialogTitle className=" mb-4">Add A Student</AlertDialogTitle>
             <div className="flex flex-col gap-8">
-              <div>
-                <Label htmlFor="name">Name</Label>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="name">Student Name</Label>
                 <Input
                   className="capitalize"
                   {...register("name", { required: "Name is required" })}
@@ -150,7 +150,7 @@ const AddStudent = ({ currentEducation }: { currentEducation: string }) => {
                   placeholder="Username"
                 />
                 <div className="text-sm text-muted-foreground">
-                  {`${username.toLowerCase()}@${currentEducation}`}
+                  {`${username.toLowerCase()}@${currentEducation.toLowerCase()}`}
                 </div>
                 <div className="text-sm text-muted-foreground lowercase text-rose-500">
                   {errors["username"]?.message?.toString() ===

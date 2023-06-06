@@ -87,7 +87,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               <div
                 onClick={handlePasswordVisibility}
                 className={cn(
-                  "absolute top-1/2  transform  right-4 -translate-y-1/2 cursor-pointer transition",
+                  "absolute right-4  top-1/2  -translate-y-1/2 transform cursor-pointer transition",
                   showPassword ? "text-blue-500" : "text-black"
                 )}
               >

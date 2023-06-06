@@ -1,8 +1,11 @@
 "use client"
 
+import Router, { useRouter } from "next/navigation"
 import { User } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
+import axios from "axios"
 import { Copy, MoreHorizontal, Trash } from "lucide-react"
+import toast from "react-hot-toast"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -33,7 +36,22 @@ export const columns: ColumnDef<User>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original
+      const user = row.original
+
+      const router = useRouter()
+
+      const handleDeleteUser = async (userId: string) => {
+        axios
+          .post("/api/auth/user/delete", { userId })
+          .then((response) => {
+            if (response.status !== 200) throw new Error("Student Not Deleted")
+            toast.success("Student Deleted")
+            router.refresh()
+          })
+          .catch((error) => {
+            toast.error(error.response.data.msg)
+          })
+      }
 
       return (
         <DropdownMenu>
@@ -46,14 +64,14 @@ export const columns: ColumnDef<User>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(user.id)}
             >
               <Copy className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
               Copy Details
             </DropdownMenuItem>
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDeleteUser(user.id)}>
               <Trash className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
               Delete Account
             </DropdownMenuItem>
