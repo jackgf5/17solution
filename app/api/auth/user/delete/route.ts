@@ -15,12 +15,11 @@ export async function POST(request: Request) {
     },
   })
 
-  if (user?.role === "EDUCATIONAL")
-    await prisma?.user.delete({
-      where: {
-        id: userId,
-      },
-    })
+  await prisma?.user.delete({
+    where: {
+      id: userId,
+    },
+  })
 
   return NextResponse.json({ msg: "User Deleted" }, { status: 200 })
 }
