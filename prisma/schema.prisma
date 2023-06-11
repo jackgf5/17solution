@@ -75,4 +75,5 @@ enum Role {
   EDUCATIONAL
   TEACHER
   STUDENT
+  EMPLOYEE
 }

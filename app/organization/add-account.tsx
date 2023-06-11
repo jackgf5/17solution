@@ -1,5 +1,6 @@
 "use client"
 
+import { error } from "console"
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { User } from "@prisma/client"
@@ -59,8 +60,11 @@ function capitalizeText(text: string) {
 
   return capitalizedText
 }
-const AddAccount = () => {
-  const [selectedCheckbox, setSelectedCheckbox] = useState("EDUCATIONAL")
+const AddEmployee = ({
+  currentOrganization,
+}: {
+  currentOrganization: string
+}) => {
   const [isLoading, setIsLoading] = useState(false)
   const [pageNumber, setPageNumber] = useState(0)
   const [createdUser, setCreatedUser] = useState<User>()
@@ -85,16 +89,16 @@ const AddAccount = () => {
 
     const user = {
       name: capitalizeText(data.name),
-      type: selectedCheckbox,
-      username: `${data.username.toLowerCase()}@${data.name.toLowerCase()}`,
+      username: `${data.username.toLowerCase()}@${currentOrganization.toLowerCase()}`,
       password: data.password,
+      currentOrganization,
     }
 
     axios
-      .post("/api/auth/register", user)
+      .post("/api/auth/organization/createemployee", user)
       .then((response) => {
-        if (response.status !== 200) throw new Error("User Not Created")
-        toast.success("User Created")
+        if (response.status !== 200) throw new Error("Employee Not Created")
+        toast.success("Employee Created")
         reset()
         setCreatedUser(response.data.user)
         setPageNumber(1)
@@ -114,21 +118,17 @@ const AddAccount = () => {
     defaultValue: "",
   })
 
-  const name = useWatch({
-    control,
-    name: "name",
-    defaultValue: "",
-  })
-
   const handleChooseContent = () => {
     if (pageNumber === 0) {
       return (
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className=" mb-4">Add An Admin</AlertDialogTitle>
+            <AlertDialogTitle className=" mb-4">
+              Add An Employee
+            </AlertDialogTitle>
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="name">Company Name</Label>
+                <Label htmlFor="name">Employee Name</Label>
                 <Input
                   className="capitalize"
                   {...register("name", { required: "Name is required" })}
@@ -137,38 +137,6 @@ const AddAccount = () => {
                   placeholder="Name"
                   disabled={isLoading}
                 />
-              </div>
-
-              <div className="flex-4 flex flex-col gap-4">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="organization"
-                    onCheckedChange={() => setSelectedCheckbox("ORGANIZATION")}
-                    checked={selectedCheckbox === "ORGANIZATION"}
-                    disabled={isLoading}
-                  />
-                  <label
-                    htmlFor="organization"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Organization
-                  </label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="educational"
-                    onCheckedChange={() => setSelectedCheckbox("EDUCATIONAL")}
-                    checked={selectedCheckbox === "EDUCATIONAL"}
-                    disabled={isLoading}
-                  />
-                  <label
-                    htmlFor="educational"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Educational Institution
-                  </label>
-                </div>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -188,9 +156,9 @@ const AddAccount = () => {
                   placeholder="Username"
                 />
                 <div className="text-sm text-muted-foreground">
-                  {`${username.toLowerCase()}@${name.toLowerCase()}`}
+                  {`${username.toLowerCase()}@${currentOrganization.toLowerCase()}`}
                 </div>
-                <div className="text-sm  lowercase text-rose-500">
+                <div className="text-sm lowercase text-rose-500">
                   {errors["username"]?.message?.toString() ===
                     "Spaces are not allowed in the username" && (
                     <div>{errors["username"]?.message.toString()}</div>
@@ -234,7 +202,7 @@ const AddAccount = () => {
               {isLoading && (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Create User
+              Create Employee
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -318,7 +286,7 @@ const AddAccount = () => {
       <AlertDialog>
         <AlertDialogTrigger className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
           <Icons.user className="mr-2 h-4 w-4" />
-          Add Account
+          Add Employee
         </AlertDialogTrigger>
         {handleChooseContent()}
       </AlertDialog>
@@ -326,4 +294,4 @@ const AddAccount = () => {
   )
 }
 
-export default AddAccount
+export default AddEmployee
