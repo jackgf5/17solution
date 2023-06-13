@@ -1,6 +1,5 @@
 "use client"
 
-import { error } from "console"
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { User } from "@prisma/client"
@@ -21,6 +20,10 @@ import {
   useWatch,
 } from "react-hook-form"
 import { toast } from "react-hot-toast"
+
+import "react-phone-number-input/style.css"
+import { isPossiblePhoneNumber } from "react-phone-number-input"
+import PhoneInput from "react-phone-number-input/react-hook-form-input"
 
 import {
   AlertDialog,
@@ -80,7 +83,9 @@ const AddEmployee = ({
     defaultValues: {
       name: "",
       username: "",
+      email: "",
       password: "",
+      phoneNumber: "+91",
     },
   })
 
@@ -90,6 +95,8 @@ const AddEmployee = ({
     const user = {
       name: capitalizeText(data.name),
       username: `${data.username.toLowerCase()}@${currentOrganization.toLowerCase()}`,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
       password: data.password,
       currentOrganization,
     }
@@ -165,6 +172,33 @@ const AddEmployee = ({
                   )}
                 </div>
               </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  className="capitalize"
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /\S+@\S+\.\S+/,
+                      message: "Entered value does not match email format",
+                    },
+                  })}
+                  type="email"
+                  id="email"
+                  placeholder="Email"
+                  disabled={isLoading}
+                />
+              </div>
+
+              <PhoneInput
+                withCountryCallingCode
+                placeholder="Phone Number"
+                className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                name="phoneNumber"
+                control={control}
+                rules={{ required: true, validate: isPossiblePhoneNumber }}
+              />
 
               <div className="flex flex-col gap-2">
                 <Label htmlFor="password">Password</Label>

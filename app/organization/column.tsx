@@ -78,6 +78,14 @@ export const columns: ColumnDef<User>[] = [
     header: "Password",
   },
   {
+    accessorKey: "email",
+    header: "Email",
+  },
+  {
+    accessorKey: "phone",
+    header: "Phone Number",
+  },
+  {
     id: "actions",
     cell: ActionsCell,
   },

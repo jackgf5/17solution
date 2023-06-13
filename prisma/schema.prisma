@@ -39,6 +39,8 @@ model User {
   name           String
   username       String        @unique
   role           Role          @default(USER)
+  email          String?
+  phone          String?
   hashedPassword String?
   accounts       Account[]
   sessions       Session[]

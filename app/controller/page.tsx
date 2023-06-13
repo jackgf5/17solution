@@ -14,7 +14,7 @@ const getData = async () => {
   const users = await prisma.user.findMany({
     where: {
       role: {
-        not: { in: ["ADMIN", "STUDENT", "TEACHER"] },
+        not: { in: ["ADMIN", "STUDENT", "TEACHER", "EMPLOYEE"] },
       },
     },
   })
