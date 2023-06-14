@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { User } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
 import axios from "axios"
-import { Copy, MoreHorizontal, Trash } from "lucide-react"
+import { Copy, MoreHorizontal, PencilIcon, Trash } from "lucide-react"
 import toast from "react-hot-toast"
 
 import { Button } from "@/components/ui/button"
@@ -16,6 +16,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
+import EditEmployee from "./edit-accounts"
 
 const ActionsCell = ({ row }: any) => {
   const user = row.original
@@ -44,6 +46,7 @@ const ActionsCell = ({ row }: any) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <EditEmployee user={user} />
         <DropdownMenuItem
           onClick={() =>
             navigator.clipboard.writeText(

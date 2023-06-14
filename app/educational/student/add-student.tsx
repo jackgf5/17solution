@@ -51,7 +51,7 @@ function generateRandomString(length: number) {
 }
 
 function capitalizeText(text: string) {
-  const words = text.split(" ")
+  const words = text.trim().split(/\s+/)
   const capitalizedWords = words.map((word) => {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
   })
@@ -87,7 +87,7 @@ const AddStudent = ({ currentEducation }: { currentEducation: string }) => {
       name: capitalizeText(data.name),
       username: `${data.username.toLowerCase()}@${currentEducation.toLowerCase()}`,
       password: data.password,
-      currentEducation,
+      currentEducation: capitalizeText(currentEducation),
     }
 
     axios

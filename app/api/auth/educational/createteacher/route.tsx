@@ -17,6 +17,18 @@ export async function POST(request: Request) {
     },
   })
 
+  if (!educational)
+    return NextResponse.json({ msg: "Educational Not Found" }, { status: 400 })
+
+  const userWithSameUsername = await prisma.user.findUnique({
+    where: {
+      username: username,
+    },
+  })
+
+  if (userWithSameUsername)
+    return NextResponse.json({ msg: "Username Taken" }, { status: 409 })
+
   const newTeacher = await prisma.user.create({
     data: {
       name: name,

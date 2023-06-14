@@ -1,6 +1,5 @@
 "use client"
 
-import { error } from "console"
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { User } from "@prisma/client"
@@ -11,6 +10,7 @@ import {
   ContactIcon,
   Copy,
   Key,
+  Pencil,
   User as UserIcon,
 } from "lucide-react"
 import {
@@ -21,6 +21,10 @@ import {
   useWatch,
 } from "react-hook-form"
 import { toast } from "react-hot-toast"
+
+import "react-phone-number-input/style.css"
+import { isPossiblePhoneNumber } from "react-phone-number-input"
+import PhoneInput from "react-phone-number-input/react-hook-form-input"
 
 import {
   AlertDialog,
@@ -60,11 +64,13 @@ function capitalizeText(text: string) {
 
   return capitalizedText
 }
-const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
+
+const EditEmployee = ({ user }: { user: User }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [pageNumber, setPageNumber] = useState(0)
   const [createdUser, setCreatedUser] = useState<User>()
   const router = useRouter()
+  const [formattedUsername, currentOrganization] = user.username.split("@")
   const {
     register,
     handleSubmit,
@@ -74,27 +80,36 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: "",
-      username: "",
-      password: "",
+      name: user.name,
+      username: formattedUsername,
+      email: user.email,
+      password: user.hashedPassword,
+      phoneNumber: user.phone,
     },
   })
+
+  const oldUsername = user.username
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true)
 
     const user = {
       name: capitalizeText(data.name),
-      username: `${data.username.toLowerCase()}@${currentEducation.toLowerCase()}`,
+      username: `${data.username.toLowerCase()}@${currentOrganization.toLowerCase()}`,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
       password: data.password,
-      currentEducation: capitalizeText(currentEducation),
+      currentOrganization: capitalizeText(currentOrganization),
+      oldUsername: oldUsername,
     }
 
+    console.log(user)
+
     axios
-      .post("/api/auth/educational/createteacher", user)
+      .post("/api/auth/organization/updateemployee", user)
       .then((response) => {
-        if (response.status !== 200) throw new Error("Teacher Not Created")
-        toast.success("Teacher Created")
+        if (response.status !== 200) throw new Error("Employee Not Updated")
+        toast.success("Employee Updated")
         reset()
         setCreatedUser(response.data.user)
         setPageNumber(1)
@@ -111,7 +126,7 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
   const username = useWatch({
     control,
     name: "username",
-    defaultValue: "",
+    defaultValue: formattedUsername,
   })
 
   const handleChooseContent = () => {
@@ -119,10 +134,12 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
       return (
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className=" mb-4">Add A Teacher</AlertDialogTitle>
+            <AlertDialogTitle className=" mb-4">
+              Add An Employee
+            </AlertDialogTitle>
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="name">Teacher Name</Label>
+                <Label htmlFor="name">Employee Name</Label>
                 <Input
                   className="capitalize"
                   {...register("name", { required: "Name is required" })}
@@ -150,15 +167,42 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
                   placeholder="Username"
                 />
                 <div className="text-sm text-muted-foreground">
-                  {`${username.toLowerCase()}@${currentEducation.toLowerCase()}`}
+                  {`${username.toLowerCase()}@${currentOrganization.toLowerCase()}`}
                 </div>
-                <div className="text-sm lowercase  text-rose-500">
+                <div className="text-sm lowercase text-rose-500">
                   {errors["username"]?.message?.toString() ===
                     "Spaces are not allowed in the username" && (
                     <div>{errors["username"]?.message.toString()}</div>
                   )}
                 </div>
               </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  className="capitalize"
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /\S+@\S+\.\S+/,
+                      message: "Entered value does not match email format",
+                    },
+                  })}
+                  type="email"
+                  id="email"
+                  placeholder="Email"
+                  disabled={isLoading}
+                />
+              </div>
+
+              <PhoneInput
+                withCountryCallingCode
+                placeholder="Phone Number"
+                className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                name="phoneNumber"
+                control={control}
+                rules={{ required: true, validate: isPossiblePhoneNumber }}
+              />
 
               <div className="flex flex-col gap-2">
                 <Label htmlFor="password">Password</Label>
@@ -196,7 +240,7 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
               {isLoading && (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Create Teacher
+              Update Employee
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -278,9 +322,9 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
   return (
     <div className="flex items-center space-x-2">
       <AlertDialog>
-        <AlertDialogTrigger className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
-          <Icons.user className="mr-2 h-4 w-4" />
-          Add Teacher
+        <AlertDialogTrigger className=" relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent  focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+          <Pencil className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+          Edit
         </AlertDialogTrigger>
         {handleChooseContent()}
       </AlertDialog>
@@ -288,4 +332,4 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
   )
 }
 
-export default AddTeacher
+export default EditEmployee

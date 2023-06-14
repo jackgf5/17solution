@@ -54,7 +54,7 @@ function generateRandomString(length: number) {
 }
 
 function capitalizeText(text: string) {
-  const words = text.split(" ")
+  const words = text.trim().split(/\s+/)
   const capitalizedWords = words.map((word) => {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
   })
@@ -98,7 +98,7 @@ const AddEmployee = ({
       email: data.email,
       phoneNumber: data.phoneNumber,
       password: data.password,
-      currentOrganization,
+      currentOrganization: capitalizeText(currentOrganization),
     }
 
     axios

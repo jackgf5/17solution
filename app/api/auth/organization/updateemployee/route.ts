@@ -4,8 +4,15 @@ import prisma from "@/lib/prisma"
 
 export async function POST(request: Request) {
   const body = await request.json()
-  const { name, username, password, currentOrganization, email, phoneNumber } =
-    body
+  const {
+    name,
+    username,
+    password,
+    currentOrganization,
+    email,
+    phoneNumber,
+    oldUsername,
+  } = body
 
   if (
     !name ||
@@ -13,7 +20,8 @@ export async function POST(request: Request) {
     !username ||
     !currentOrganization ||
     !email ||
-    !phoneNumber
+    !phoneNumber ||
+    !oldUsername
   )
     return NextResponse.json({ msg: "Missing Fields" }, { status: 400 })
 
@@ -35,7 +43,10 @@ export async function POST(request: Request) {
   if (userWithSameUsername)
     return NextResponse.json({ msg: "Username Taken" }, { status: 409 })
 
-  const newEmployee = await prisma.user.create({
+  const updatedEmployee = await prisma.user.update({
+    where: {
+      username: oldUsername,
+    },
     data: {
       name: name,
       username: username,
@@ -48,7 +59,7 @@ export async function POST(request: Request) {
   })
 
   return NextResponse.json(
-    { msg: "Employee Created", user: newEmployee },
+    { msg: "Employee Updated", user: updatedEmployee },
     { status: 200 }
   )
 }
