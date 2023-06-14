@@ -184,7 +184,7 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
                   </Button>
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  Enter text to be hased into password
+                  Enter text to be hashed into password
                 </div>
               </div>
             </div>

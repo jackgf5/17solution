@@ -1,6 +1,5 @@
 "use client"
 
-import { error } from "console"
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { User } from "@prisma/client"
@@ -11,6 +10,7 @@ import {
   ContactIcon,
   Copy,
   Key,
+  Pencil,
   User as UserIcon,
 } from "lucide-react"
 import {
@@ -21,6 +21,10 @@ import {
   useWatch,
 } from "react-hook-form"
 import { toast } from "react-hot-toast"
+
+import "react-phone-number-input/style.css"
+import { isPossiblePhoneNumber } from "react-phone-number-input"
+import PhoneInput from "react-phone-number-input/react-hook-form-input"
 
 import {
   AlertDialog,
@@ -50,17 +54,7 @@ function generateRandomString(length: number) {
   return randomString
 }
 
-function capitalizeText(text: string) {
-  const words = text.trim().split(/\s+/)
-  const capitalizedWords = words.map((word) => {
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-  })
-
-  const capitalizedText = capitalizedWords.join(" ")
-
-  return capitalizedText
-}
-const AddStudent = ({ currentEducation }: { currentEducation: string }) => {
+const EditEmployee = ({ user }: { user: User }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [pageNumber, setPageNumber] = useState(0)
   const [createdUser, setCreatedUser] = useState<User>()
@@ -72,29 +66,23 @@ const AddStudent = ({ currentEducation }: { currentEducation: string }) => {
     setValue,
     reset,
     formState: { errors },
-  } = useForm<FieldValues>({
-    defaultValues: {
-      name: "",
-      username: "",
-      password: "",
-    },
-  })
+  } = useForm<FieldValues>()
+
+  const currentUsername = user.username
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true)
 
     const user = {
-      name: capitalizeText(data.name),
-      username: `${data.username.toLowerCase()}@${currentEducation.toLowerCase()}`,
+      username: currentUsername,
       password: data.password,
-      currentEducation: capitalizeText(currentEducation),
     }
 
     axios
-      .post("/api/auth/educational/createstudent", user)
+      .post("/api/auth/user/updatepassword", user)
       .then((response) => {
-        if (response.status !== 200) throw new Error("Student Not Created")
-        toast.success("Student Created")
+        if (response.status !== 200) throw new Error("Password Not Updated")
+        toast.success("Password Updated")
         reset()
         setCreatedUser({ ...response.data.user, hashedPassword: data.password })
         setPageNumber(1)
@@ -108,58 +96,13 @@ const AddStudent = ({ currentEducation }: { currentEducation: string }) => {
       })
   }
 
-  const username = useWatch({
-    control,
-    name: "username",
-    defaultValue: "",
-  })
-
   const handleChooseContent = () => {
     if (pageNumber === 0) {
       return (
-        <AlertDialogContent className="w-[90%]">
+        <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className=" mb-4">Add A Student</AlertDialogTitle>
+            <AlertDialogTitle className=" mb-4">Edit Password</AlertDialogTitle>
             <div className="flex flex-col gap-8">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="name">Student Name</Label>
-                <Input
-                  className="capitalize"
-                  {...register("name", { required: "Name is required" })}
-                  type="text"
-                  id="name"
-                  placeholder="Name"
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  disabled={isLoading}
-                  {...register("username", {
-                    required: "Username is required",
-                    pattern: {
-                      value: /^[^\s]+$/,
-                      message: "Spaces are not allowed in the username",
-                    },
-                  })}
-                  className="lowercase"
-                  type="text"
-                  id="username"
-                  placeholder="Username"
-                />
-                <div className="text-sm text-muted-foreground">
-                  {`${username.toLowerCase()}@${currentEducation.toLowerCase()}`}
-                </div>
-                <div className="text-sm lowercase text-rose-500">
-                  {errors["username"]?.message?.toString() ===
-                    "Spaces are not allowed in the username" && (
-                    <div>{errors["username"]?.message.toString()}</div>
-                  )}
-                </div>
-              </div>
-
               <div className="flex flex-col gap-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="flex gap-2">
@@ -196,7 +139,7 @@ const AddStudent = ({ currentEducation }: { currentEducation: string }) => {
               {isLoading && (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Create Student
+              Update Employee
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -278,9 +221,9 @@ const AddStudent = ({ currentEducation }: { currentEducation: string }) => {
   return (
     <div className="flex items-center space-x-2">
       <AlertDialog>
-        <AlertDialogTrigger className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
-          <Icons.user className="mr-2 h-4 w-4" />
-          Add Student
+        <AlertDialogTrigger className=" relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent  focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+          <Pencil className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+          Edit
         </AlertDialogTrigger>
         {handleChooseContent()}
       </AlertDialog>
@@ -288,4 +231,4 @@ const AddStudent = ({ currentEducation }: { currentEducation: string }) => {
   )
 }
 
-export default AddStudent
+export default EditEmployee

@@ -83,7 +83,6 @@ const EditEmployee = ({ user }: { user: User }) => {
       name: user.name,
       username: formattedUsername,
       email: user.email,
-      password: user.hashedPassword,
       phoneNumber: user.phone,
     },
   })
@@ -102,8 +101,6 @@ const EditEmployee = ({ user }: { user: User }) => {
       currentOrganization: capitalizeText(currentOrganization),
       oldUsername: oldUsername,
     }
-
-    console.log(user)
 
     axios
       .post("/api/auth/organization/updateemployee", user)

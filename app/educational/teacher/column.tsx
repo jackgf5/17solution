@@ -73,10 +73,7 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "username",
     header: "Username",
   },
-  {
-    accessorKey: "hashedPassword",
-    header: "Password",
-  },
+
   {
     id: "actions",
     cell: ActionsCell,

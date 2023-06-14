@@ -17,6 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import EditPassword from "./edit-password"
+
 const ActionsCell = ({ row }: any) => {
   const user = row.original
   const router = useRouter()
@@ -44,7 +46,7 @@ const ActionsCell = ({ row }: any) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
+        <EditPassword user={user} />
         <DropdownMenuItem
           onClick={() =>
             navigator.clipboard.writeText(
@@ -74,10 +76,7 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "username",
     header: "Username",
   },
-  {
-    accessorKey: "hashedPassword",
-    header: "Password",
-  },
+
   {
     id: "actions",
     cell: ActionsCell,
