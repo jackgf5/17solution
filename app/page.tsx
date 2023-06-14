@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation"
+import bcrypt from "bcrypt"
 import { getServerSession } from "next-auth/next"
 
 import { authOptions } from "./api/auth/[...nextauth]/route"
 
 const page = async () => {
   const session = await getServerSession(authOptions)
-  console.log(session?.user)
   if (!session) redirect("/auth")
   if (session.user?.role === "ADMIN") redirect("/controller")
   if (session.user?.role === "EDUCATIONAL") redirect("/educational")
