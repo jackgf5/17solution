@@ -1,5 +1,6 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
+import Head from "next/head"
 import ToasterProvider from "@/providers/toastprovider"
 
 import { siteConfig } from "@/config/site"
@@ -22,6 +23,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
       <html lang="en" suppressHydrationWarning>
+        <Head>
+          <meta name="viewport" content="viewport-fit=cover" />
+        </Head>
         <body
           className={cn(
             "min-h-screen w-full bg-background font-sans antialiased",

@@ -128,7 +128,7 @@ const AddEmployee = ({
   const handleChooseContent = () => {
     if (pageNumber === 0) {
       return (
-        <AlertDialogContent>
+        <AlertDialogContent className="w-[90%]">
           <AlertDialogHeader>
             <AlertDialogTitle className=" mb-4">
               Add An Employee
