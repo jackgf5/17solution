@@ -1,4 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import bcrypt from "bcrypt"
 import NextAuth, { AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
@@ -28,7 +29,10 @@ export const authOptions: AuthOptions = {
           throw new Error("Invalid Credentials")
         }
 
-        const isCorrectPassword = credentials.password === user.hashedPassword
+        const isCorrectPassword = await bcrypt.compare(
+          credentials.password,
+          user.hashedPassword
+        )
 
         if (!isCorrectPassword) {
           throw new Error("Invalid Credentials")

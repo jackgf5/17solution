@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import bcrypt from "bcrypt"
 
 import prisma from "@/lib/prisma"
 
@@ -43,6 +44,8 @@ export async function POST(request: Request) {
   if (userWithSameUsername)
     return NextResponse.json({ msg: "Username Taken" }, { status: 409 })
 
+  const hashedPassword = await bcrypt.hash(password, 12)
+
   const updatedEmployee = await prisma.user.update({
     where: {
       username: oldUsername,
@@ -52,7 +55,7 @@ export async function POST(request: Request) {
       username: username,
       email: email,
       phone: phoneNumber,
-      hashedPassword: password,
+      hashedPassword: hashedPassword,
       role: "EMPLOYEE",
       organizationId: organization?.id,
     },

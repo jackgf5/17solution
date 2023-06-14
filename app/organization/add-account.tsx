@@ -107,7 +107,7 @@ const AddEmployee = ({
         if (response.status !== 200) throw new Error("Employee Not Created")
         toast.success("Employee Created")
         reset()
-        setCreatedUser(response.data.user)
+        setCreatedUser({ ...response.data.user, hashedPassword: data.password })
         setPageNumber(1)
         router.refresh()
       })

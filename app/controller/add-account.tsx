@@ -96,7 +96,7 @@ const AddAccount = () => {
         if (response.status !== 200) throw new Error("User Not Created")
         toast.success("User Created")
         reset()
-        setCreatedUser(response.data.user)
+        setCreatedUser({ ...response.data.user, hashedPassword: data.password })
         setPageNumber(1)
         router.refresh()
       })

@@ -96,7 +96,7 @@ const AddTeacher = ({ currentEducation }: { currentEducation: string }) => {
         if (response.status !== 200) throw new Error("Teacher Not Created")
         toast.success("Teacher Created")
         reset()
-        setCreatedUser(response.data.user)
+        setCreatedUser({ ...response.data.user, hashedPassword: data.password })
         setPageNumber(1)
         router.refresh()
       })
