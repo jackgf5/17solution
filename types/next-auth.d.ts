@@ -4,6 +4,7 @@ import { DefaultSession, DefaultUser } from "next-auth"
 interface IUser extends DefaultUser {
   role?: Role
   username: string
+  accessToken: string
 }
 declare module "next-auth" {
   interface User extends IUser {}

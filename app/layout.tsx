@@ -23,9 +23,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
       <html lang="en" suppressHydrationWarning>
-        <Head>
-          <meta name="viewport" content="viewport-fit=cover" />
-        </Head>
         <body
           className={cn(
             "min-h-screen w-full bg-background font-sans antialiased",

@@ -3,6 +3,7 @@ import bcrypt from "bcrypt"
 import NextAuth, { AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
+import { signJwtAccessToken } from "@/lib/jwt"
 import prisma from "@/lib/prisma"
 
 export const authOptions: AuthOptions = {
@@ -14,7 +15,7 @@ export const authOptions: AuthOptions = {
         username: { label: "username", type: "text" },
         password: { label: "password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (!credentials?.username || !credentials?.password) {
           throw new Error("Please Fill All Fields")
         }
@@ -38,7 +39,15 @@ export const authOptions: AuthOptions = {
           throw new Error("Invalid Password")
         }
 
-        return user
+        const { hashedPassword, ...userWithoutPassword } = user
+
+        const accessToken = signJwtAccessToken(userWithoutPassword)
+        const result = {
+          ...userWithoutPassword,
+          accessToken,
+        }
+
+        return result
       },
     }),
   ],
@@ -49,6 +58,7 @@ export const authOptions: AuthOptions = {
         token.role = user.role
         token.id = user.id
         token.username = user.username
+        token.accessToken = user.accessToken
       }
 
       return token
@@ -59,6 +69,7 @@ export const authOptions: AuthOptions = {
         session.user.role = token.role
         session.user.id = token.id
         session.user.username = token.username
+        session.user.accessToken = token.accessToken
       }
 
       return session
@@ -70,6 +81,8 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
+  debug: true,
+
   secret: process.env.NEXTAUTH_SECRET,
 }
 
