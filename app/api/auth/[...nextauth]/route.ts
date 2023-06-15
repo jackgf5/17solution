@@ -16,7 +16,7 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) {
-          throw new Error("Invalid Credentials")
+          throw new Error("Please Fill All Fields")
         }
 
         const user = await prisma.user.findUnique({
@@ -26,7 +26,7 @@ export const authOptions: AuthOptions = {
         })
 
         if (!user || !user?.hashedPassword) {
-          throw new Error("Invalid Credentials")
+          throw new Error("User Not Found")
         }
 
         const isCorrectPassword = await bcrypt.compare(
@@ -35,7 +35,7 @@ export const authOptions: AuthOptions = {
         )
 
         if (!isCorrectPassword) {
-          throw new Error("Invalid Credentials")
+          throw new Error("Invalid Password")
         }
 
         return user
