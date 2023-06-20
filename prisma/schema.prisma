@@ -42,12 +42,25 @@ model User {
   email          String?
   phone          String?
   hashedPassword String?
+  shifts         Shift[]
   accounts       Account[]
   sessions       Session[]
   educational    Educational?  @relation(fields: [educationalId], references: [id])
   educationalId  String?
   organization   Organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
+}
+
+model Shift {
+  id             String  @id @default(cuid())
+  date           String
+  checkinTime    String
+  checkoutTime   String?
+  durationWorked String?
+  breaksTaken    Int     @default(0)
+  completed      Boolean @default(false)
+  User           User?   @relation(fields: [userId], references: [id])
+  userId         String?
 }
 
 model Educational {
