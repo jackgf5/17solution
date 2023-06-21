@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
   const organization = await prisma.organization.findFirst({
     where: {
-      name: companyName,
+      name: { equals: companyName, mode: "insensitive" },
     },
     include: { coordinates: true },
   })
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
   const educational = await prisma.educational.findFirst({
     where: {
-      name: companyName,
+      name: { equals: companyName, mode: "insensitive" },
     },
     include: { coordinates: true },
   })
@@ -36,5 +36,5 @@ export async function POST(request: Request) {
       { status: 200 }
     )
 
-  return NextResponse.json({ msg: "No Info Found" }, { status: 404 })
+  return NextResponse.json({ msg: "No Info Found" }, { status: 400 })
 }
