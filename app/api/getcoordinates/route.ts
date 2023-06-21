@@ -17,11 +17,14 @@ export async function POST(request: Request) {
     include: { coordinates: true },
   })
 
-  if (organization)
+  if (organization) {
+    const coordinates = organization.coordinates
+
     return NextResponse.json(
-      { msg: `${organization.name} Info`, organization },
+      { msg: `${organization.name} Info`, coordinates },
       { status: 200 }
     )
+  }
 
   const educational = await prisma.educational.findFirst({
     where: {
@@ -30,11 +33,13 @@ export async function POST(request: Request) {
     include: { coordinates: true },
   })
 
-  if (educational)
+  if (educational) {
+    const coordinates = educational.coordinates
     return NextResponse.json(
-      { msg: `${educational.name} Info`, educational },
+      { msg: `${educational.name} Info`, coordinates },
       { status: 200 }
     )
+  }
 
   return NextResponse.json({ msg: "No Info Found" }, { status: 400 })
 }
