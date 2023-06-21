@@ -51,6 +51,16 @@ model User {
   organizationId String?
 }
 
+model Coordinate {
+  id             String        @id @default(cuid())
+  latitude       Float
+  longitude      Float
+  Educational    Educational?  @relation(fields: [educationalId], references: [id])
+  educationalId  String?
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+}
+
 model Shift {
   id             String  @id @default(cuid())
   date           String
@@ -64,15 +74,17 @@ model Shift {
 }
 
 model Educational {
-  id    String @id @default(cuid())
-  name  String @unique
-  users User[]
+  id          String       @id @default(cuid())
+  name        String       @unique
+  coordinates Coordinate[]
+  users       User[]
 }
 
 model Organization {
-  id    String @id @default(cuid())
-  name  String @unique
-  users User[]
+  id          String       @id @default(cuid())
+  name        String       @unique
+  coordinates Coordinate[]
+  users       User[]
 }
 
 model VerificationToken {
