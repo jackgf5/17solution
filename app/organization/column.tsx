@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import EditEmployee from "./edit-accounts"
+import ViewTimes from "./view-times"
 
 const ActionsCell = ({ row }: any) => {
   const user = row.original
@@ -47,6 +48,7 @@ const ActionsCell = ({ row }: any) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <EditEmployee user={user} />
+        <ViewTimes user={user} />
         <DropdownMenuItem
           onClick={() =>
             navigator.clipboard.writeText(

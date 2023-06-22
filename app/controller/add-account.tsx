@@ -1,8 +1,15 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { User } from "@prisma/client"
+import {
+  DrawingManagerF,
+  GoogleMap,
+  LoadScript,
+  Polygon,
+  StandaloneSearchBox,
+} from "@react-google-maps/api"
 import axios from "axios"
 import {
   Bell,
@@ -38,6 +45,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Icons } from "@/components/icons"
 
+const options = ["drawing"]
+
 function generateRandomString(length: number) {
   var characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -64,6 +73,23 @@ const AddAccount = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [pageNumber, setPageNumber] = useState(0)
   const [createdUser, setCreatedUser] = useState<User>()
+  const [polygonPaths, setPolygonPaths] = useState([])
+  const [drawingEnabled, setDrawingEnabled] = useState(true)
+  const [currentLocation, setCurrentLocation] = useState(null)
+
+  const handlePolygonComplete = (polygon) => {
+    const paths = polygon
+      .getPath()
+      .getArray()
+      .map((latLng) => ({
+        lat: latLng.lat(),
+        lng: latLng.lng(),
+      }))
+
+    console.log("paths", paths)
+    setDrawingEnabled(false)
+    setPolygonPaths(paths)
+  }
   const router = useRouter()
   const {
     register,
@@ -225,6 +251,35 @@ const AddAccount = () => {
                   Enter text to be hashed into password
                 </div>
               </div>
+              <LoadScript
+                googleMapsApiKey="AIzaSyCOiL3MhwGqAekGqdLsWvnVqbpBY8jvvHE"
+                libraries={options}
+              >
+                {drawingEnabled && (
+                  <GoogleMap
+                    mapContainerStyle={{
+                      width: "460px",
+                      height: "200px",
+                    }}
+                    center={
+                      currentLocation ?? {
+                        lat: -3.745,
+                        lng: -38.523,
+                      }
+                    }
+                    zoom={10}
+                  >
+                    <DrawingManagerF
+                      options={{
+                        drawingControlOptions: {
+                          drawingModes: ["polygon"], // Specify the allowed drawing modes (only polygon)
+                        },
+                      }}
+                      onPolygonComplete={handlePolygonComplete} // Handle polygon completion event
+                    />
+                  </GoogleMap>
+                )}
+              </LoadScript>
             </div>
           </AlertDialogHeader>
           <AlertDialogFooter>
