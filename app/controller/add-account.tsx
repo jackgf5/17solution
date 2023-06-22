@@ -77,11 +77,11 @@ const AddAccount = () => {
   const [drawingEnabled, setDrawingEnabled] = useState(true)
   const [currentLocation, setCurrentLocation] = useState(null)
 
-  const handlePolygonComplete = (polygon) => {
+  const handlePolygonComplete = (polygon: any) => {
     const paths = polygon
       .getPath()
       .getArray()
-      .map((latLng) => ({
+      .map((latLng: any) => ({
         lat: latLng.lat(),
         lng: latLng.lng(),
       }))
@@ -253,7 +253,7 @@ const AddAccount = () => {
               </div>
               <LoadScript
                 googleMapsApiKey="AIzaSyCOiL3MhwGqAekGqdLsWvnVqbpBY8jvvHE"
-                libraries={options}
+                libraries={options as any}
               >
                 {drawingEnabled && (
                   <GoogleMap
@@ -272,7 +272,7 @@ const AddAccount = () => {
                     <DrawingManagerF
                       options={{
                         drawingControlOptions: {
-                          drawingModes: ["polygon"], // Specify the allowed drawing modes (only polygon)
+                          drawingModes: ["polygon"] as any, // Specify the allowed drawing modes (only polygon)
                         },
                       }}
                       onPolygonComplete={handlePolygonComplete} // Handle polygon completion event
