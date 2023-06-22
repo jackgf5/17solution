@@ -40,7 +40,7 @@ const ViewTimes = ({ user }: { user: User }) => {
         setShifts(response.data.shifts)
       })
       .catch((err) => console.log(err))
-  }, [])
+  }, [user.id])
 
   return (
     <div className="flex items-center space-x-2">
@@ -51,13 +51,15 @@ const ViewTimes = ({ user }: { user: User }) => {
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className=" mb-4">
-              {user.name} Times
-            </AlertDialogTitle>
+            <AlertDialogTitle className=" mb-4">User Shifts</AlertDialogTitle>
             <div className="flex max-h-[500px] flex-col gap-8 overflow-y-scroll scrollbar-hide  ">
-              {shifts?.map((shift) => (
-                <SingleTiming key={shift.id} shift={shift} />
-              ))}
+              {shifts?.length === 0 ? (
+                <div className="text-sm">No Shifts Recorded</div>
+              ) : (
+                shifts?.map((shift) => (
+                  <SingleTiming key={shift.id} shift={shift} />
+                ))
+              )}
             </div>
           </AlertDialogHeader>
           <AlertDialogFooter>
