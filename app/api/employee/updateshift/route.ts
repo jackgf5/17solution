@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       id: shiftId,
     },
     data: {
-      checkoutTime: formatISO(end),
+      checkoutTime: checkoutTime,
       completed: true,
       durationWorked: minutesDifference,
     },
