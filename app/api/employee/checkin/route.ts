@@ -5,18 +5,16 @@ import prisma from "@/lib/prisma"
 
 export async function POST(request: Request) {
   const body = await request.json()
-  const { userId } = body
+  const { userId, now } = body
 
   if (!userId)
     return NextResponse.json({ msg: "Missing Fields" }, { status: 400 })
 
-  const date = new Date()
-
   const shift = await prisma.shift.create({
     data: {
       userId: userId,
-      date: formatISO(date),
-      checkinTime: formatISO(date, { representation: "complete" }),
+      date: formatISO(now),
+      checkinTime: formatISO(now),
     },
   })
 
