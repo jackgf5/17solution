@@ -19,17 +19,6 @@ import {
 
 import SingleTiming from "./single-timing"
 
-const shift: Shift = {
-  userId: "",
-  id: "clj62yt7j0001mk08z2xwg28u",
-  date: "2023-06-21T19:01:30Z",
-  checkinTime: "2023-06-21T19:01:30Z",
-  checkoutTime: "2023-06-21T19:01:48Z",
-  durationWorked: "0",
-  completed: true,
-  breaksTaken: 0,
-}
-
 const ViewTimes = ({ user }: { user: User }) => {
   const [shifts, setShifts] = useState<Shift[]>()
 
