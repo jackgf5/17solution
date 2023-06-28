@@ -78,17 +78,17 @@ model Shift {
 }
 
 model Educational {
-  id           String     @id @default(cuid())
-  name         String     @unique
-  coordinate   Coordinate @relation(fields: [coordinateId], references: [id])
+  id           String      @id @default(cuid())
+  name         String      @unique
+  coordinate   Coordinate? @relation(fields: [coordinateId], references: [id])
   users        User[]
   coordinateId String
 }
 
 model Organization {
-  id           String     @id @default(cuid())
-  name         String     @unique
-  coordinate   Coordinate @relation(fields: [coordinateId], references: [id])
+  id           String      @id @default(cuid())
+  name         String      @unique
+  coordinate   Coordinate? @relation(fields: [coordinateId], references: [id])
   users        User[]
   coordinateId String
 }
