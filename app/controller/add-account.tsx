@@ -103,6 +103,9 @@ const AddAccount = () => {
       name: "",
       username: "",
       password: "",
+      latitude: 0,
+      longitude: 0,
+      radius: 30,
     },
   })
 
@@ -114,6 +117,9 @@ const AddAccount = () => {
       type: selectedCheckbox,
       username: `${data.username.toLowerCase()}@${data.name.toLowerCase()}`,
       password: data.password,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      radius: data.radius,
     }
 
     axios
@@ -251,35 +257,51 @@ const AddAccount = () => {
                   Enter text to be hashed into password
                 </div>
               </div>
-              <LoadScript
-                googleMapsApiKey="AIzaSyCOiL3MhwGqAekGqdLsWvnVqbpBY8jvvHE"
-                libraries={options as any}
-              >
-                {drawingEnabled && (
-                  <GoogleMap
-                    mapContainerStyle={{
-                      width: "460px",
-                      height: "200px",
-                    }}
-                    center={
-                      currentLocation ?? {
-                        lat: -3.745,
-                        lng: -38.523,
-                      }
-                    }
-                    zoom={10}
-                  >
-                    <DrawingManagerF
-                      options={{
-                        drawingControlOptions: {
-                          drawingModes: ["polygon"] as any, // Specify the allowed drawing modes (only polygon)
-                        },
-                      }}
-                      onPolygonComplete={handlePolygonComplete} // Handle polygon completion event
-                    />
-                  </GoogleMap>
-                )}
-              </LoadScript>
+
+              <div className="flex flex-row gap-2">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="latitude">Latitude</Label>
+                  <Input
+                    className="capitalize"
+                    {...register("latitude", {
+                      required: "Latitude is required",
+                    })}
+                    type="number"
+                    id="latitude"
+                    placeholder="Lat"
+                    step="any"
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="longitude">Longitude</Label>
+                  <Input
+                    className="capitalize"
+                    {...register("longitude", {
+                      required: "Longitude is required",
+                    })}
+                    type="number"
+                    step="any"
+                    id="longitude"
+                    placeholder="Long"
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="radius">Radius</Label>
+                  <Input
+                    className="capitalize"
+                    {...register("radius", { required: "Radius is required" })}
+                    type="number"
+                    id="radius"
+                    disabled={isLoading}
+                  />
+                </div>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Enter latitude and logitude of center of building and radius to
+                track as the area inside the location
+              </div>
             </div>
           </AlertDialogHeader>
           <AlertDialogFooter>
