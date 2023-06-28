@@ -52,13 +52,14 @@ model User {
 }
 
 model Coordinate {
-  id             String        @id @default(cuid())
+  id             String         @id @default(cuid())
   latitude       Float
   longitude      Float
-  Educational    Educational?  @relation(fields: [educationalId], references: [id])
+  radius         Int
   educationalId  String?
-  Organization   Organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
+  Educational    Educational[]
+  Organization   Organization[]
 }
 
 model Shift {
@@ -77,17 +78,19 @@ model Shift {
 }
 
 model Educational {
-  id          String       @id @default(cuid())
-  name        String       @unique
-  coordinates Coordinate[]
-  users       User[]
+  id           String     @id @default(cuid())
+  name         String     @unique
+  coordinate   Coordinate @relation(fields: [coordinateId], references: [id])
+  users        User[]
+  coordinateId String
 }
 
 model Organization {
-  id          String       @id @default(cuid())
-  name        String       @unique
-  coordinates Coordinate[]
-  users       User[]
+  id           String     @id @default(cuid())
+  name         String     @unique
+  coordinate   Coordinate @relation(fields: [coordinateId], references: [id])
+  users        User[]
+  coordinateId String
 }
 
 model VerificationToken {

@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server"
-import { formatISO } from "date-fns"
-
 import prisma from "@/lib/prisma"
 
 export async function POST(request: Request) {
@@ -14,11 +12,11 @@ export async function POST(request: Request) {
     where: {
       name: { equals: companyName, mode: "insensitive" },
     },
-    include: { coordinates: true },
+    include: { coordinate: true },
   })
 
   if (organization) {
-    const coordinates = organization.coordinates
+    const coordinates = organization.coordinate
 
     return NextResponse.json(
       { msg: `${organization.name} Info`, coordinates },
@@ -30,11 +28,11 @@ export async function POST(request: Request) {
     where: {
       name: { equals: companyName, mode: "insensitive" },
     },
-    include: { coordinates: true },
+    include: { coordinate: true },
   })
 
   if (educational) {
-    const coordinates = educational.coordinates
+    const coordinates = educational.coordinate
     return NextResponse.json(
       { msg: `${educational.name} Info`, coordinates },
       { status: 200 }
