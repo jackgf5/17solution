@@ -6,10 +6,10 @@ import { authOptions } from "./api/auth/[...nextauth]/route"
 
 const page = async () => {
   const session = await getServerSession(authOptions)
-
+  console.log(session)
   if (!session) redirect("/auth")
   if (session.user?.role === "ADMIN") redirect("/controller")
-  if (session.user?.role === "EDUCATIONAL") redirect("/educational")
+  if (session.user?.role === "EDUCATIONAL") redirect("/educational/students")
   if (session.user?.role === "ORGANIZATION") redirect("/organization/employees")
 
   return <div>page</div>

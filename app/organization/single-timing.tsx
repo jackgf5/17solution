@@ -48,7 +48,7 @@ const SingleTiming = ({ shift }: { shift: Shift }) => {
         <div className=" flex flex-col items-center justify-center gap-2">
           <div className="text-center text-xs font-medium">Left Zone</div>
           <div className="flex items-center gap-2 text-center text-xs  font-bold">
-            0
+            {shift.amountOutside} / {shift.amountChecked}
           </div>
         </div>
       </div>{" "}
