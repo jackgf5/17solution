@@ -17,7 +17,7 @@ const SingleTiming = ({ shift }: { shift: Shift }) => {
   return (
     <div className=" flex items-center justify-between  rounded-md p-2 hover:bg-accent hover:text-accent-foreground">
       <div className="flex  flex-col items-center justify-center gap-3 ">
-        <Calendar className="h-6 w-6" />
+        <Calendar className="  h-3.5 w-3.5 text-muted-foreground/70" />
 
         <div className=" flex flex-col items-center gap-2">
           <div className="text-xs font-medium">
@@ -31,7 +31,7 @@ const SingleTiming = ({ shift }: { shift: Shift }) => {
         </div>
       </div>
       <div className="mr-2 flex flex-col items-center justify-center gap-3">
-        <Clock className="h-6 w-6" />
+        <Clock className="  h-3.5 w-3.5 text-muted-foreground/70" />
 
         <div className=" flex flex-col items-center gap-2">
           <div className="text-xs font-medium">Times</div>
@@ -43,7 +43,7 @@ const SingleTiming = ({ shift }: { shift: Shift }) => {
         </div>
       </div>
       <div className="mr-2 flex flex-col items-center justify-center gap-3">
-        <Radio className="h-6 w-6" />
+        <Radio className="  h-3.5 w-3.5 text-muted-foreground/70" />
 
         <div className=" flex flex-col items-center justify-center gap-2">
           <div className="text-center text-xs font-medium">Left Zone</div>
@@ -51,7 +51,7 @@ const SingleTiming = ({ shift }: { shift: Shift }) => {
             {shift.amountOutside} / {shift.amountChecked}
           </div>
         </div>
-      </div>{" "}
+      </div>
     </div>
   )
 }
