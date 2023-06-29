@@ -83,6 +83,19 @@ model Educational {
   coordinate   Coordinate? @relation(fields: [coordinateId], references: [id])
   users        User[]
   coordinateId String?     @unique
+  events       Event[]
+}
+
+model Event {
+  id             String        @id @default(cuid())
+  name           String
+  startTime      String
+  endTime        String
+  date           String
+  educational    Educational?  @relation(fields: [educationalId], references: [id])
+  educationalId  String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
 }
 
 model Organization {
@@ -91,6 +104,7 @@ model Organization {
   coordinate   Coordinate? @relation(fields: [coordinateId], references: [id])
   users        User[]
   coordinateId String?     @unique
+  events       Event[]
 }
 
 model VerificationToken {

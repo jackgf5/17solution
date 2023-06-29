@@ -85,7 +85,7 @@ const ActionsCell = ({ row }: any) => {
   )
 }
 
-export const columns: ColumnDef<UserWithShift>[] = [
+export const allColumns: ColumnDef<UserWithShift>[] = [
   {
     accessorKey: "id",
     header: "ID",

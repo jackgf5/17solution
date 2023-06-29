@@ -46,47 +46,6 @@ export function Sidebar({
             </Button>
           </div>
         </div>
-
-        <div className="">
-          <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
-            Events
-          </h2>
-          <div className="space-y-1">
-            <Button
-              variant={selection === "events" ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start"
-            >
-              <Link
-                className="flex w-full items-center"
-                href={"/educational/events"}
-              >
-                <CalendarRange className="mr-2 h-4 w-4" />
-                View Events
-              </Link>
-            </Button>
-          </div>
-        </div>
-        <div className="">
-          <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
-            Students
-          </h2>
-          <div className="space-y-1">
-            <Button
-              variant={selection === "students" ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start"
-            >
-              <Link
-                className="flex w-full items-center"
-                href={"/educational/students"}
-              >
-                <GraduationCap className="mr-2 h-4 w-4" />
-                View Students
-              </Link>
-            </Button>
-          </div>
-        </div>
         <div className="">
           <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
             Teachers
@@ -107,22 +66,44 @@ export function Sidebar({
             </Button>
           </div>
         </div>
+
+        <div className="">
+          <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
+            Students
+          </h2>
+          <div className="space-y-1">
+            <Button
+              variant={selection === "students" ? "default" : "ghost"}
+              size="sm"
+              className="w-full justify-start"
+            >
+              <Link
+                className="flex w-full items-center"
+                href={"/educational/students"}
+              >
+                <GraduationCap className="mr-2 h-4 w-4" />
+                View Students
+              </Link>
+            </Button>
+          </div>
+        </div>
+
         <div className="">
           <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
             Events
           </h2>
           <div className="space-y-1">
             <Button
-              variant={selection === "calendar" ? "default" : "ghost"}
+              variant={selection === "events" ? "default" : "ghost"}
               size="sm"
               className="w-full justify-start"
             >
               <Link
                 className="flex w-full items-center"
-                href={"/organization/calendar"}
+                href={"/educational/events"}
               >
-                <Calendar className="mr-2 h-4 w-4" />
-                Calendar
+                <CalendarRange className="mr-2 h-4 w-4" />
+                View Events
               </Link>
             </Button>
           </div>

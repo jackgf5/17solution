@@ -4,16 +4,16 @@ import prisma from "@/lib/prisma"
 
 export async function POST(request: Request) {
   const body = await request.json()
-  const { userId } = body
+  const { eventId } = body
 
-  if (!userId)
+  if (!eventId)
     return NextResponse.json({ msg: "Missing Fields" }, { status: 400 })
 
-  await prisma?.user.delete({
+  await prisma.event.delete({
     where: {
-      id: userId,
+      id: eventId,
     },
   })
 
-  return NextResponse.json({ msg: "User Deleted" }, { status: 200 })
+  return NextResponse.json({ msg: "Event Deleted" }, { status: 200 })
 }

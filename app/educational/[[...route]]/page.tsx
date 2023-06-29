@@ -15,9 +15,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { eventsColumns } from "@/app/organization/[[...route]]/eventsColumn"
 
 import { authOptions } from "../../api/auth/[...nextauth]/route"
 import { UserNav } from "../../controller/user-nav"
+import AddEvent from "../add-event"
 import { Sidebar } from "../sidebar"
 import Stats from "../stats"
 import AddStudent from "../student/add-student"
@@ -26,7 +28,7 @@ import { DataTable as StudentDataTable } from "../student/data-table"
 import AddTeacher from "../teacher/add-teacher"
 import { columns as TeacherColumns } from "../teacher/column"
 import { DataTable as TeachersDataTable } from "../teacher/data-table"
-import { columns } from "./column"
+import { UserWithShift, columns } from "./column"
 import { DataTable } from "./data-table"
 
 const getTeachersAndStudents = async (currentEducational: string) => {
@@ -63,8 +65,30 @@ const getAllUsersWithTodayShift = async (currentEducational: string) => {
     },
   })
 
-  if (!educational) return []
+  if (!educational)
+    return {
+      mergedUsers: [],
+      checkedInCount: 0,
+      totalCount: 0,
+      totalHours: 0,
+      absentCount: 0,
+    }
   const educationalId = educational?.id
+
+  const events = await prisma.event.findMany({
+    where: {
+      educationalId: educationalId,
+    },
+  })
+
+  const formattedEvents = events.map((event) => {
+    return {
+      ...event,
+      startTime: format(parseISO(event.startTime), "HH:mm"),
+      endTime: format(parseISO(event.endTime), "HH:mm"),
+      date: format(parseISO(event.date), "dd-MM-yyyy"),
+    }
+  })
 
   const today = new Date() // Current date
   today.setUTCHours(0, 0, 0, 0) // Set time to 00:00:00 in UTC
@@ -90,7 +114,24 @@ const getAllUsersWithTodayShift = async (currentEducational: string) => {
     },
   })
 
+  let checkedInCount = 0
+  let absentCount = 0
+  let totalCount = 0
+  let totalHours = 0
+
   const mergedUsers = usersWithShifts.map((user) => {
+    if (user.shifts?.[0]?.checkinTime) {
+      checkedInCount++
+      totalCount++
+    } else {
+      absentCount++
+      totalCount++
+    }
+
+    if (user.shifts?.[0]?.durationWorked) {
+      totalHours = totalHours + parseInt(user.shifts?.[0]?.durationWorked)
+    }
+
     return {
       ...user,
       checkinTime: user.shifts?.[0]?.checkinTime
@@ -111,8 +152,14 @@ const getAllUsersWithTodayShift = async (currentEducational: string) => {
     }
   })
 
-  console.log("MERGED", mergedUsers)
-  return mergedUsers
+  return {
+    mergedUsers,
+    checkedInCount,
+    totalCount,
+    totalHours,
+    absentCount,
+    formattedEvents,
+  }
 }
 
 const page = async ({ params }: { params: any }) => {
@@ -126,9 +173,14 @@ const page = async ({ params }: { params: any }) => {
   const { students, teachers } = await getTeachersAndStudents(
     currentEducational
   )
-  const allUserWithShiftToday = await getAllUsersWithTodayShift(
-    currentEducational
-  )
+  const {
+    mergedUsers,
+    checkedInCount,
+    totalCount,
+    totalHours,
+    absentCount,
+    formattedEvents: events,
+  } = await getAllUsersWithTodayShift(currentEducational)
 
   const selection = params?.route?.[0] || ""
 
@@ -214,8 +266,16 @@ const page = async ({ params }: { params: any }) => {
         <Sidebar selection={selection} className="w-1/5" />
         {selection === "" && (
           <div className="flex w-full flex-col  gap-4">
-            <Stats />
-            <DataTable columns={columns} data={allUserWithShiftToday} />
+            <Stats
+              absentCount={absentCount}
+              totalCount={totalCount}
+              totalHours={totalHours}
+              checkedInCount={checkedInCount}
+            />
+            <DataTable
+              columns={columns}
+              data={mergedUsers as UserWithShift[]}
+            />
           </div>
         )}
         {selection === "students" && (
@@ -232,6 +292,14 @@ const page = async ({ params }: { params: any }) => {
               <AddTeacher currentEducation={currentEducational} />
             </div>
             <TeachersDataTable columns={TeacherColumns} data={teachers} />
+          </div>
+        )}
+        {selection === "events" && (
+          <div className="flex w-full flex-col  gap-4">
+            <div className="ml-auto">
+              <AddEvent currentEducational={currentEducational} />
+            </div>
+            <DataTable columns={eventsColumns} data={events || []} />
           </div>
         )}
       </div>

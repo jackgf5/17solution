@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { format, parseISO } from "date-fns"
 import { Calendar, Menu, Users } from "lucide-react"
 import { getServerSession } from "next-auth/next"
 
@@ -14,33 +15,118 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import Stats from "@/app/educational/stats"
 
 import { authOptions } from "../../api/auth/[...nextauth]/route"
 import { UserNav } from "../../controller/user-nav"
 import AddAccount from "../add-account"
+import AddEvent from "../add-event"
 import { columns } from "../column"
 import { DataTable } from "../data-table"
 import { Sidebar } from "../sidebar"
+import { UserWithShift, allColumns } from "./allColumn"
+import { eventsColumns } from "./eventsColumn"
 
-const getData = async (currentOrganization: string) => {
-  const organization = await prisma.organization.findUnique({
+const getAllUsersWithTodayShift = async (currentOrganization: string) => {
+  const organization = await prisma?.organization.findUnique({
     where: {
       name: currentOrganization,
     },
   })
 
-  const organizationID = organization?.id
+  if (!organization)
+    return {
+      mergedUsers: [],
+      checkedInCount: 0,
+      totalCount: 0,
+      totalHours: 0,
+      absentCount: 0,
+    }
+  const organizationId = organization?.id
 
-  if (!organizationID) return []
+  const today = new Date() // Current date
+  today.setUTCHours(0, 0, 0, 0) // Set time to 00:00:00 in UTC
 
-  const employees = await prisma.user.findMany({
+  const events = await prisma.event.findMany({
     where: {
-      organizationId: organizationID,
-      role: "EMPLOYEE",
+      organizationId: organization.id,
     },
   })
 
-  return employees
+  const formattedEvents = events.map((event) => {
+    return {
+      ...event,
+      startTime: format(parseISO(event.startTime), "HH:mm"),
+      endTime: format(parseISO(event.endTime), "HH:mm"),
+      date: format(parseISO(event.date), "dd-MM-yyyy"),
+    }
+  })
+
+  const usersWithShifts = await prisma.user.findMany({
+    where: {
+      organizationId: organizationId,
+      role: "EMPLOYEE",
+    },
+    include: {
+      shifts: {
+        where: {
+          date: {
+            gte: today.toISOString().split("T")[0], // Greater than or equal to today
+            lt: new Date(today.getTime() + 24 * 60 * 60 * 1000)
+              .toISOString()
+              .split("T")[0], // Less than tomorrow
+          },
+        },
+      },
+    },
+  })
+
+  let checkedInCount = 0
+  let absentCount = 0
+  let totalCount = 0
+  let totalHours = 0
+
+  const mergedUsers = usersWithShifts.map((user) => {
+    if (user.shifts?.[0]?.checkinTime) {
+      checkedInCount++
+      totalCount++
+    } else {
+      absentCount++
+      totalCount++
+    }
+
+    if (user.shifts?.[0]?.durationWorked) {
+      totalHours = totalHours + parseInt(user.shifts?.[0]?.durationWorked)
+    }
+
+    return {
+      ...user,
+      checkinTime: user.shifts?.[0]?.checkinTime
+        ? format(parseISO(user.shifts?.[0]?.checkinTime), "HH:mm")
+        : null,
+      checkoutTime: user.shifts?.[0]?.checkoutTime
+        ? format(parseISO(user.shifts?.[0]?.checkoutTime), "HH:mm")
+        : null,
+      durationWorked: user.shifts?.[0]?.durationWorked
+        ? format(
+            new Date(0, 0, 0, 0, parseInt(user.shifts?.[0]?.durationWorked)),
+            "HH:mm"
+          )
+        : null,
+      amountInside: user.shifts?.[0]?.amountInside || null,
+      amountOutside: user.shifts?.[0]?.amountOutside || null,
+      amountChecked: user.shifts?.[0]?.amountChecked || null,
+    }
+  })
+
+  return {
+    mergedUsers,
+    checkedInCount,
+    totalCount,
+    totalHours,
+    absentCount,
+    formattedEvents,
+  }
 }
 
 const page = async ({ params }: { params: any }) => {
@@ -51,7 +137,14 @@ const page = async ({ params }: { params: any }) => {
   if (currentOrganization === undefined || currentOrganization === null) {
     return
   }
-  const data = await getData(currentOrganization)
+  const {
+    mergedUsers,
+    checkedInCount,
+    totalCount,
+    totalHours,
+    absentCount,
+    formattedEvents: events,
+  } = await getAllUsersWithTodayShift(currentOrganization)
 
   const selection = params?.route?.[0] || ""
 
@@ -132,14 +225,39 @@ const page = async ({ params }: { params: any }) => {
             </SheetContent>
           </Sheet>
         </div>
-        <AddAccount currentOrganization={currentOrganization} />
       </div>
       <div className="flex gap-10">
         <Sidebar selection={selection} className="w-1/5" />
-        {selection === "employees" ? (
-          <DataTable columns={columns} data={data} />
-        ) : (
-          <div></div>
+        {selection === "" && (
+          <div className="flex w-full flex-col  gap-4">
+            <Stats
+              absentCount={absentCount}
+              totalCount={totalCount}
+              totalHours={totalHours}
+              checkedInCount={checkedInCount}
+            />
+            <DataTable
+              columns={allColumns}
+              data={mergedUsers as UserWithShift[]}
+            />
+          </div>
+        )}
+        {selection === "employees" && (
+          <div className="flex w-full flex-col  gap-4">
+            <div className="ml-auto">
+              <AddAccount currentOrganization={currentOrganization} />
+            </div>
+            <DataTable columns={columns} data={mergedUsers} />
+          </div>
+        )}
+
+        {selection === "events" && (
+          <div className="flex w-full flex-col  gap-4">
+            <div className="ml-auto">
+              <AddEvent currentOrganization={currentOrganization} />
+            </div>
+            <DataTable columns={eventsColumns} data={events || []} />
+          </div>
         )}
       </div>
     </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { User } from "@prisma/client"
+import { Event, User } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
 import axios from "axios"
 import { Copy, MoreHorizontal, Trash } from "lucide-react"
@@ -38,15 +38,15 @@ export interface UserWithShift {
 }
 
 const ActionsCell = ({ row }: any) => {
-  const user = row.original
+  const event = row.original
   const router = useRouter()
 
-  const handleDeleteUser = async (userId: string) => {
+  const handleDeleteEvent = async (eventId: string) => {
     axios
-      .post("/api/auth/user/delete", { userId })
+      .post("/api/events/delete/", { eventId: eventId })
       .then((response) => {
-        if (response.status !== 200) throw new Error("Teacher Not Deleted")
-        toast.success("Teacher Deleted")
+        if (response.status !== 200) throw new Error("Event Not Deleted")
+        toast.success("Event Deleted")
         router.refresh()
       })
       .catch((error) => {
@@ -64,51 +64,37 @@ const ActionsCell = ({ row }: any) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <ViewTimes user={user} />
-        <DropdownMenuItem
-          onClick={() =>
-            navigator.clipboard.writeText(
-              `username:${user.username},password:${user.hashedPassword}`
-            )
-          }
-        >
-          <Copy className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-          Copy Details
-        </DropdownMenuItem>
+
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => handleDeleteUser(user.id)}>
+        <DropdownMenuItem onClick={() => handleDeleteEvent(event.id)}>
           <Trash className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-          Delete Account
+          Delete Event
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
 }
 
-export const columns: ColumnDef<UserWithShift>[] = [
+export const eventsColumns: ColumnDef<Event>[] = [
   {
     accessorKey: "id",
     header: "ID",
   },
   {
-    accessorKey: "username",
-    header: "Username",
+    accessorKey: "name",
+    header: "Name",
   },
   {
-    accessorKey: "checkinTime",
-    header: "Checked In",
+    accessorKey: "startTime",
+    header: "Start Time",
   },
   {
-    accessorKey: "checkoutTime",
-    header: "Checked Out",
+    accessorKey: "endTime",
+    header: "End Time",
   },
   {
-    accessorKey: "durationWorked",
-    header: "Duration Worked",
-  },
-  {
-    accessorKey: "amountOutside",
-    header: "Left Zone",
+    accessorKey: "date",
+    header: "Date",
   },
 
   {
