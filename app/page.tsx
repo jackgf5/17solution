@@ -9,8 +9,8 @@ const page = async () => {
   console.log(session)
   if (!session) redirect("/auth")
   if (session.user?.role === "ADMIN") redirect("/controller")
-  if (session.user?.role === "EDUCATIONAL") redirect("/educational/students")
-  if (session.user?.role === "ORGANIZATION") redirect("/organization/employees")
+  if (session.user?.role === "EDUCATIONAL") redirect("/educational/")
+  if (session.user?.role === "ORGANIZATION") redirect("/organization/")
 
   return <div>page</div>
 }
