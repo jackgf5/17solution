@@ -15,6 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Stats from "@/app/educational/stats"
 
 import { authOptions } from "../../api/auth/[...nextauth]/route"
@@ -62,6 +63,11 @@ const getAllUsersWithTodayShift = async (currentOrganization: string) => {
     }
   })
 
+  const dateISO = format(
+    new Date(today.getTime() + 24 * 60 * 60 * 1000),
+    "yyyy-MM-dd"
+  ).split("T")[0]
+
   const usersWithShifts = await prisma.user.findMany({
     where: {
       organizationId: organizationId,
@@ -71,10 +77,7 @@ const getAllUsersWithTodayShift = async (currentOrganization: string) => {
       shifts: {
         where: {
           date: {
-            gte: today.toISOString().split("T")[0], // Greater than or equal to today
-            lt: new Date(today.getTime() + 24 * 60 * 60 * 1000)
-              .toISOString()
-              .split("T")[0], // Less than tomorrow
+            startsWith: dateISO,
           },
         },
       },
@@ -129,6 +132,176 @@ const getAllUsersWithTodayShift = async (currentOrganization: string) => {
   }
 }
 
+const getAllUsersWithYesterdayShift = async (currentOrganization: string) => {
+  const organization = await prisma?.organization.findUnique({
+    where: {
+      name: currentOrganization,
+    },
+  })
+
+  if (!organization)
+    return {
+      mergedUsers: [],
+      checkedInCount: 0,
+      totalCount: 0,
+      totalHours: 0,
+      absentCount: 0,
+    }
+  const organizationId = organization?.id
+
+  const today = new Date()
+  const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000)
+  const yesterdayString = format(yesterday, "yyyy-MM-dd").split("T")[0]
+
+  const usersWithShifts = await prisma.user.findMany({
+    where: {
+      organizationId: organizationId,
+      role: "EMPLOYEE",
+    },
+    include: {
+      shifts: {
+        where: {
+          date: {
+            startsWith: yesterdayString,
+          },
+        },
+      },
+    },
+  })
+
+  let checkedInCount = 0
+  let absentCount = 0
+  let totalCount = 0
+  let totalHours = 0
+
+  const mergedUsers = usersWithShifts.map((user) => {
+    if (user.shifts?.[0]?.checkinTime) {
+      checkedInCount++
+      totalCount++
+    } else {
+      absentCount++
+      totalCount++
+    }
+
+    if (user.shifts?.[0]?.durationWorked) {
+      totalHours = totalHours + parseInt(user.shifts?.[0]?.durationWorked)
+    }
+
+    return {
+      ...user,
+      checkinTime: user.shifts?.[0]?.checkinTime
+        ? format(parseISO(user.shifts?.[0]?.checkinTime), "HH:mm")
+        : null,
+      checkoutTime: user.shifts?.[0]?.checkoutTime
+        ? format(parseISO(user.shifts?.[0]?.checkoutTime), "HH:mm")
+        : null,
+      durationWorked: user.shifts?.[0]?.durationWorked
+        ? format(
+            new Date(0, 0, 0, 0, parseInt(user.shifts?.[0]?.durationWorked)),
+            "HH:mm"
+          )
+        : null,
+      amountInside: user.shifts?.[0]?.amountInside || null,
+      amountOutside: user.shifts?.[0]?.amountOutside || null,
+      amountChecked: user.shifts?.[0]?.amountChecked || null,
+    }
+  })
+
+  return {
+    mergedUsers,
+    checkedInCount,
+    totalCount,
+    totalHours,
+    absentCount,
+  }
+}
+
+const getAllUsersWithDayBeforeShift = async (currentOrganization: string) => {
+  const organization = await prisma?.organization.findUnique({
+    where: {
+      name: currentOrganization,
+    },
+  })
+
+  if (!organization)
+    return {
+      mergedUsers: [],
+      checkedInCount: 0,
+      totalCount: 0,
+      totalHours: 0,
+      absentCount: 0,
+    }
+  const organizationId = organization?.id
+
+  const today = new Date()
+  const dayBeforeYesterday = new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000)
+  const dayBeforeYesterdayString = format(
+    dayBeforeYesterday,
+    "yyyy-MM-dd"
+  ).split("T")[0] // Convert the day before yesterday's date to string in 'YYYY-MM-DD' format
+  const usersWithShifts = await prisma.user.findMany({
+    where: {
+      organizationId: organizationId,
+      role: "EMPLOYEE",
+    },
+    include: {
+      shifts: {
+        where: {
+          date: {
+            startsWith: dayBeforeYesterdayString, // Filter shifts with date starting with the day before yesterday's date
+          },
+        },
+      },
+    },
+  })
+
+  let checkedInCount = 0
+  let absentCount = 0
+  let totalCount = 0
+  let totalHours = 0
+
+  const mergedUsers = usersWithShifts.map((user) => {
+    if (user.shifts?.[0]?.checkinTime) {
+      checkedInCount++
+      totalCount++
+    } else {
+      absentCount++
+      totalCount++
+    }
+
+    if (user.shifts?.[0]?.durationWorked) {
+      totalHours = totalHours + parseInt(user.shifts?.[0]?.durationWorked)
+    }
+
+    return {
+      ...user,
+      checkinTime: user.shifts?.[0]?.checkinTime
+        ? format(parseISO(user.shifts?.[0]?.checkinTime), "HH:mm")
+        : null,
+      checkoutTime: user.shifts?.[0]?.checkoutTime
+        ? format(parseISO(user.shifts?.[0]?.checkoutTime), "HH:mm")
+        : null,
+      durationWorked: user.shifts?.[0]?.durationWorked
+        ? format(
+            new Date(0, 0, 0, 0, parseInt(user.shifts?.[0]?.durationWorked)),
+            "HH:mm"
+          )
+        : null,
+      amountInside: user.shifts?.[0]?.amountInside || null,
+      amountOutside: user.shifts?.[0]?.amountOutside || null,
+      amountChecked: user.shifts?.[0]?.amountChecked || null,
+    }
+  })
+
+  return {
+    mergedUsers,
+    checkedInCount,
+    totalCount,
+    totalHours,
+    absentCount,
+  }
+}
+
 const page = async ({ params }: { params: any }) => {
   const session = await getServerSession(authOptions)
   if (session?.user?.role !== "ORGANIZATION") redirect("/auth")
@@ -145,6 +318,22 @@ const page = async ({ params }: { params: any }) => {
     absentCount,
     formattedEvents: events,
   } = await getAllUsersWithTodayShift(currentOrganization)
+
+  const {
+    mergedUsers: usersYesterday,
+    checkedInCount: checkedInYesterday,
+    totalCount: totalCountYesterday,
+    totalHours: totalHoursYesterday,
+    absentCount: absentCountYesterday,
+  } = await getAllUsersWithYesterdayShift(currentOrganization)
+
+  const {
+    mergedUsers: usersDayBefore,
+    checkedInCount: checkedInDayBefore,
+    totalCount: totalCountDayBefore,
+    totalHours: totalHoursDayBefore,
+    absentCount: absentCountDayBefore,
+  } = await getAllUsersWithDayBeforeShift(currentOrganization)
 
   const selection = params?.route?.[0] || ""
 
@@ -230,16 +419,59 @@ const page = async ({ params }: { params: any }) => {
         <Sidebar selection={selection} className="w-1/5" />
         {selection === "" && (
           <div className="flex w-full flex-col  gap-4">
-            <Stats
-              absentCount={absentCount}
-              totalCount={totalCount}
-              totalHours={totalHours}
-              checkedInCount={checkedInCount}
-            />
-            <DataTable
-              columns={allColumns}
-              data={mergedUsers as UserWithShift[]}
-            />
+            <Tabs defaultValue="today" className="h-full space-y-6">
+              <div className=" flex items-center">
+                <TabsList className="ml-auto">
+                  <TabsTrigger value="today" className="relative">
+                    Today
+                  </TabsTrigger>
+                  <TabsTrigger value="yesterday">Yesterday</TabsTrigger>
+                  <TabsTrigger value="twodaysago">Two Days Ago</TabsTrigger>
+                </TabsList>
+              </div>
+              <TabsContent defaultChecked value="today">
+                <div className="flex flex-col gap-4">
+                  <Stats
+                    absentCount={absentCount}
+                    totalCount={totalCount}
+                    totalHours={totalHours}
+                    checkedInCount={checkedInCount}
+                  />
+                  <DataTable
+                    columns={allColumns}
+                    data={mergedUsers as UserWithShift[]}
+                  />
+                </div>
+              </TabsContent>
+              <TabsContent value="yesterday">
+                <div className="flex flex-col gap-4">
+                  <Stats
+                    absentCount={absentCountYesterday}
+                    totalCount={totalCountYesterday}
+                    totalHours={totalHoursYesterday}
+                    checkedInCount={checkedInYesterday}
+                  />
+                  <DataTable
+                    columns={allColumns}
+                    data={usersYesterday as UserWithShift[]}
+                  />
+                </div>
+              </TabsContent>
+              <TabsContent value="twodaysago">
+                <div className="flex flex-col gap-4">
+                  <Stats
+                    absentCount={absentCountDayBefore}
+                    totalCount={totalCountDayBefore}
+                    totalHours={totalHoursDayBefore}
+                    checkedInCount={checkedInDayBefore}
+                  />
+                  <DataTable
+                    columns={allColumns}
+                    data={usersDayBefore as UserWithShift[]}
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         )}
         {selection === "employees" && (
