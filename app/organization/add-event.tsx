@@ -51,23 +51,25 @@ import {
 import { TimePicker } from "@/components/ui/time-picker"
 import { Icons } from "@/components/icons"
 
-function capitalizeText(text: string) {
-  const words = text.trim().split(/\s+/)
-  const capitalizedWords = words.map((word) => {
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-  })
 
-  const capitalizedText = capitalizedWords.join(" ")
-
-  return capitalizedText
-}
 const AddEvent = ({ currentOrganization }: { currentOrganization: string }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [date, setDate] = useState<Date>()
   const [eventName, setEventName] = useState("")
+  const [eventDescription, setEventDescription] = useState("")
   const [startTime, setStartTime] = useState<TimeValue | null>()
   const [endTime, setEndTime] = useState<TimeValue | null>()
+  const [selectedCheckbox, setSelectedCheckbox] = useState("HOLIDAY")
   const router = useRouter()
+
+  const resetStates = () => {
+    setDate(undefined)
+    setEventName("")
+    setEventDescription("")
+    setStartTime(null)
+    setEndTime(null)
+    setSelectedCheckbox("HOLIDAY")
+  }
 
   const handleStartTimeChange = (value: TimeValue) => {
     setStartTime(value)
@@ -102,6 +104,8 @@ const AddEvent = ({ currentOrganization }: { currentOrganization: string }) => {
       endTime: endTimeIso,
       date: dateIso,
       currentOrganization: currentOrganization,
+      type: selectedCheckbox,
+      desc: eventDescription,
     }
 
     axios
@@ -109,6 +113,7 @@ const AddEvent = ({ currentOrganization }: { currentOrganization: string }) => {
       .then((response) => {
         if (response.status !== 200) throw new Error("Event Not Created")
         toast.success("Event Created")
+        resetStates()
         router.refresh()
       })
       .catch((error) => {
@@ -138,6 +143,53 @@ const AddEvent = ({ currentOrganization }: { currentOrganization: string }) => {
                 disabled={isLoading}
               />
             </div>
+
+            <div className="flex-4 flex flex-col gap-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="holiday"
+                  onCheckedChange={() => setSelectedCheckbox("HOLIDAY")}
+                  checked={selectedCheckbox === "HOLIDAY"}
+                  disabled={isLoading}
+                />
+                <label
+                  htmlFor="holiday"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Holiday
+                </label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="other"
+                  onCheckedChange={() => setSelectedCheckbox("OTHER")}
+                  checked={selectedCheckbox === "OTHER"}
+                  disabled={isLoading}
+                />
+                <label
+                  htmlFor="other"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Other
+                </label>
+              </div>
+            </div>
+
+            {selectedCheckbox === "OTHER" && (
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="name">Event Description</Label>
+                <Input
+                  className="capitalize"
+                  value={eventDescription}
+                  onChange={(event) => setEventDescription(event.target.value)}
+                  type="text"
+                  id="name"
+                  placeholder="Description"
+                  disabled={isLoading}
+                />
+              </div>
+            )}
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="password">Date</Label>

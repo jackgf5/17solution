@@ -85,6 +85,14 @@ export const eventsColumns: ColumnDef<Event>[] = [
     header: "Name",
   },
   {
+    accessorKey: "type",
+    header: "Type",
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+  },
+  {
     accessorKey: "startTime",
     header: "Start Time",
   },

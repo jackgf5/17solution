@@ -11,9 +11,11 @@ export async function POST(request: Request) {
     date,
     currentOrganization,
     currentEducational,
+    type,
+    desc,
   } = body
 
-  if (!name || !startTime || !endTime || !date)
+  if (!name || !startTime || !endTime || !date || !type)
     return NextResponse.json({ msg: "Missing Fields" }, { status: 400 })
 
   if (currentOrganization) {
@@ -25,7 +27,7 @@ export async function POST(request: Request) {
 
     if (!organization)
       return NextResponse.json(
-        { msg: "Organization Not Fo und" },
+        { msg: "Organization Not Found" },
         { status: 400 }
       )
 
@@ -35,6 +37,8 @@ export async function POST(request: Request) {
         startTime: startTime,
         endTime: endTime,
         date: date,
+        type: type,
+        description: desc,
         organizationId: organization.id,
       },
     })
@@ -64,6 +68,8 @@ export async function POST(request: Request) {
         startTime: startTime,
         endTime: endTime,
         date: date,
+        type: type,
+        description: desc,
         educationalId: educational.id,
       },
     })

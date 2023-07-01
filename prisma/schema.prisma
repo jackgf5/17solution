@@ -92,6 +92,8 @@ model Event {
   startTime      String
   endTime        String
   date           String
+  type           EventType     @default(HOLIDAY)
+  description    String?
   educational    Educational?  @relation(fields: [educationalId], references: [id])
   educationalId  String?
   organization   Organization? @relation(fields: [organizationId], references: [id])
@@ -113,6 +115,11 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum EventType {
+  HOLIDAY
+  OTHER
 }
 
 enum Role {
