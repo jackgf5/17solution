@@ -59,6 +59,7 @@ export const authOptions: AuthOptions = {
         token.id = user.id
         token.username = user.username
         token.accessToken = user.accessToken
+        token.expoToken = user.expoToken || ""
       }
 
       return token
@@ -70,6 +71,7 @@ export const authOptions: AuthOptions = {
         session.user.id = token.id
         session.user.username = token.username
         session.user.accessToken = token.accessToken
+        session.user.expoToken = token.expoToken
       }
 
       return session
