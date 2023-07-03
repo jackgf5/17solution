@@ -34,7 +34,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import SingleTiming from "./single-timing"
 
-const ViewTimes = ({ user }: { user: User }) => {
+const ViewProfile = ({ user }: { user: User }) => {
   const [shifts, setShifts] = useState<Shift[]>()
   const totalMinutesWorked = shifts
     ? shifts.reduce(
@@ -236,4 +236,4 @@ const ViewTimes = ({ user }: { user: User }) => {
   )
 }
 
-export default ViewTimes
+export default ViewProfile

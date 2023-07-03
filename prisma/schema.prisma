@@ -35,21 +35,22 @@ model Session {
 }
 
 model User {
-  id             String        @id @default(cuid())
-  name           String
-  username       String        @unique
-  role           Role          @default(USER)
-  email          String?
-  phone          String?
-  hashedPassword String?
-  shifts         Shift[]
-  accounts       Account[]
-  sessions       Session[]
-  educational    Educational?  @relation(fields: [educationalId], references: [id])
-  educationalId  String?
-  organization   Organization? @relation(fields: [organizationId], references: [id])
-  organizationId String?
-  expoToken      String?
+  id               String             @id @default(cuid())
+  name             String
+  username         String             @unique
+  role             Role               @default(USER)
+  email            String?
+  phone            String?
+  hashedPassword   String?
+  shifts           Shift[]
+  accounts         Account[]
+  sessions         Session[]
+  educational      Educational?       @relation(fields: [educationalId], references: [id])
+  educationalId    String?
+  organization     Organization?      @relation(fields: [organizationId], references: [id])
+  organizationId   String?
+  expoToken        String?
+  leaveApplication leaveApplication[]
 }
 
 model Coordinate {
@@ -110,6 +111,17 @@ model Organization {
   events       Event[]
 }
 
+model leaveApplication {
+  id        String @id @default(cuid())
+  startDate String
+  endDate   String
+  reason    String
+  daysOff   Int
+  userId    String
+  user      User   @relation(fields: [userId], references: [id])
+  status    Status
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -121,6 +133,12 @@ model VerificationToken {
 enum EventType {
   HOLIDAY
   OTHER
+}
+
+enum Status {
+  AWAITING
+  APPROVED
+  DECLINED
 }
 
 enum Role {

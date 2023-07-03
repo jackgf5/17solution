@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import ViewTimes from "@/app/organization/view-times"
 
+import SendNoti from "../send-noti"
+
 export interface UserWithShift {
   id: string
   name: string
@@ -65,6 +67,7 @@ const ActionsCell = ({ row }: any) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <ViewTimes user={user} />
+        <SendNoti user={user} />
         <DropdownMenuItem
           onClick={() =>
             navigator.clipboard.writeText(

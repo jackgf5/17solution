@@ -16,6 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import SendNoti from "@/app/organization/send-noti"
 import ViewTimes from "@/app/organization/view-times"
 
 const ActionsCell = ({ row }: any) => {
@@ -46,6 +47,7 @@ const ActionsCell = ({ row }: any) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <ViewTimes user={user} />
+        <SendNoti user={user} />
         <DropdownMenuItem
           onClick={() =>
             navigator.clipboard.writeText(
