@@ -34,19 +34,16 @@ export function Sidebar({
             Stats
           </h2>
           <div className="space-y-1">
-            <Button
-              variant={selection === "" ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start"
-            >
-              <Link
-                className="flex w-full items-center"
-                href={"/organization/"}
+            <Link className="flex w-full items-center" href={"/organization/"}>
+              <Button
+                variant={selection === "" ? "default" : "ghost"}
+                size="sm"
+                className="w-full justify-start"
               >
                 <BarChart className="mr-2 h-4 w-4" />
                 View Stats
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
         <div className="">
@@ -54,19 +51,19 @@ export function Sidebar({
             Employees
           </h2>
           <div className="space-y-1">
-            <Button
-              variant={selection === "employees" ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start"
+            <Link
+              className="flex w-full items-center"
+              href={"/organization/employees"}
             >
-              <Link
-                className="flex w-full items-center"
-                href={"/organization/employees"}
+              <Button
+                variant={selection === "employees" ? "default" : "ghost"}
+                size="sm"
+                className="w-full justify-start"
               >
                 <Users className="mr-2 h-4 w-4" />
                 View Employees
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
         <div className="">
@@ -74,19 +71,19 @@ export function Sidebar({
             Events
           </h2>
           <div className="space-y-1">
-            <Button
-              variant={selection === "events" ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start"
+            <Link
+              className="flex w-full items-center"
+              href={"/organization/events"}
             >
-              <Link
-                className="flex w-full items-center"
-                href={"/organization/events"}
+              <Button
+                variant={selection === "events" ? "default" : "ghost"}
+                size="sm"
+                className="w-full justify-start"
               >
                 <CalendarRange className="mr-2 h-4 w-4" />
                 View Events
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -95,19 +92,19 @@ export function Sidebar({
             Leave
           </h2>
           <div className="space-y-1">
-            <Button
-              variant={selection === "leave" ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start"
+            <Link
+              className="flex w-full items-center"
+              href={"/organization/leave"}
             >
-              <Link
-                className="flex w-full items-center"
-                href={"/organization/leave"}
+              <Button
+                variant={selection === "leave" ? "default" : "ghost"}
+                size="sm"
+                className="w-full justify-start"
               >
                 <Layers className="mr-2 h-4 w-4" />
                 View Applications
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

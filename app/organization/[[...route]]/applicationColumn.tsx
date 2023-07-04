@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation"
 import { ColumnDef } from "@tanstack/react-table"
 import axios from "axios"
-import { Copy, MoreHorizontal, Trash } from "lucide-react"
+import { Check, Copy, MoreHorizontal, Trash, X } from "lucide-react"
 import toast from "react-hot-toast"
 
 import { Button } from "@/components/ui/button"
@@ -32,15 +32,23 @@ interface ApplicationUser {
 }
 
 const ActionsCell = ({ row }: any) => {
-  const event = row.original
+  const application = row.original
   const router = useRouter()
 
-  const handleDeleteEvent = async (eventId: string) => {
+  const handleUpdateStatus = async (
+    applicationId: string,
+    newStatus: "AWAITING" | "APPROVED" | "DECLINED"
+  ) => {
+    if (application.status === "APPROVED" || application.status === "DECLINED")
+      return toast.error("Status Already Set")
     axios
-      .post("/api/events/delete/", { eventId: eventId })
+      .post("/api/employee/updatestatus/", {
+        applicationId: applicationId,
+        newStatus,
+      })
       .then((response) => {
-        if (response.status !== 200) throw new Error("Event Not Deleted")
-        toast.success("Event Deleted")
+        if (response.status !== 200) throw new Error("Status Not Updated")
+        toast.success("Status Updated")
         router.refresh()
       })
       .catch((error) => {
@@ -60,9 +68,17 @@ const ActionsCell = ({ row }: any) => {
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => handleDeleteEvent(event.id)}>
-          <Trash className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-          Delete Event
+        <DropdownMenuItem
+          onClick={() => handleUpdateStatus(application.id, "APPROVED")}
+        >
+          <Check className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+          Approve
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => handleUpdateStatus(application.id, "DECLINED")}
+        >
+          <X className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+          Decline
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -70,10 +86,6 @@ const ActionsCell = ({ row }: any) => {
 }
 
 export const applicationColumns: ColumnDef<ApplicationUser>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-  },
   {
     accessorKey: "username",
     header: "Username",
@@ -87,7 +99,7 @@ export const applicationColumns: ColumnDef<ApplicationUser>[] = [
     header: "Start Date",
   },
   {
-    accessorKey: "endDATE",
+    accessorKey: "endDate",
     header: "End Date",
   },
   {
@@ -97,6 +109,10 @@ export const applicationColumns: ColumnDef<ApplicationUser>[] = [
   {
     accessorKey: "reason",
     header: "Reason",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
   },
 
   {

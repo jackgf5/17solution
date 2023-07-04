@@ -35,16 +35,16 @@ export function Sidebar({
             Stats
           </h2>
           <div className="space-y-1">
-            <Button
-              variant={selection === "" ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start"
-            >
-              <Link className="flex w-full items-center" href={"/educational/"}>
+            <Link className="flex w-full items-center" href={"/educational/"}>
+              <Button
+                variant={selection === "" ? "default" : "ghost"}
+                size="sm"
+                className="w-full justify-start"
+              >
                 <BarChart className="mr-2 h-4 w-4" />
                 View Stats
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
         <div className="">
@@ -52,19 +52,19 @@ export function Sidebar({
             Teachers
           </h2>
           <div className="space-y-1">
-            <Button
-              variant={selection === "teachers" ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start"
+            <Link
+              className="flex w-full items-center"
+              href={"/educational/teachers"}
             >
-              <Link
-                className="flex w-full items-center"
-                href={"/educational/teachers"}
+              <Button
+                variant={selection === "teachers" ? "default" : "ghost"}
+                size="sm"
+                className="w-full justify-start"
               >
                 <Users className="mr-2 h-4 w-4" />
                 View Teachers
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -73,19 +73,19 @@ export function Sidebar({
             Students
           </h2>
           <div className="space-y-1">
-            <Button
-              variant={selection === "students" ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start"
+            <Link
+              className="flex w-full items-center"
+              href={"/educational/students"}
             >
-              <Link
-                className="flex w-full items-center"
-                href={"/educational/students"}
+              <Button
+                variant={selection === "students" ? "default" : "ghost"}
+                size="sm"
+                className="w-full justify-start"
               >
                 <GraduationCap className="mr-2 h-4 w-4" />
                 View Students
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -94,19 +94,19 @@ export function Sidebar({
             Events
           </h2>
           <div className="space-y-1">
-            <Button
-              variant={selection === "events" ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start"
+            <Link
+              className="flex w-full items-center"
+              href={"/educational/events"}
             >
-              <Link
-                className="flex w-full items-center"
-                href={"/educational/events"}
+              <Button
+                variant={selection === "events" ? "default" : "ghost"}
+                size="sm"
+                className="w-full justify-start"
               >
                 <CalendarRange className="mr-2 h-4 w-4" />
                 View Events
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -115,19 +115,19 @@ export function Sidebar({
             Leave
           </h2>
           <div className="space-y-1">
-            <Button
-              variant={selection === "leave" ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start"
+            <Link
+              className="flex w-full items-center"
+              href={"/educational/leave"}
             >
-              <Link
-                className="flex w-full items-center"
-                href={"/organization/leave"}
+              <Button
+                variant={selection === "leave" ? "default" : "ghost"}
+                size="sm"
+                className="w-full justify-start"
               >
                 <Layers className="mr-2 h-4 w-4" />
                 View Applications
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

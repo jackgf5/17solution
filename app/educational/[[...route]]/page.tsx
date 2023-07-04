@@ -16,6 +16,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { applicationColumns } from "@/app/organization/[[...route]]/applicationColumn"
 import { eventsColumns } from "@/app/organization/[[...route]]/eventsColumn"
 
 import { authOptions } from "../../api/auth/[...nextauth]/route"
@@ -75,6 +76,29 @@ const getAllUsersWithTodayShift = async (currentEducational: string) => {
       absentCount: 0,
     }
   const educationalId = educational?.id
+
+  const applicationsWithUser = await prisma.leaveApplication.findMany({
+    where: {
+      educationalId: educational.id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+        },
+      },
+    },
+  })
+
+  const allPendingApplications = applicationsWithUser.map((application) => {
+    return {
+      ...application,
+      username: application.user.username,
+      name: application.user.name,
+    }
+  })
 
   const today = new Date() // Current date
   today.setUTCHours(0, 0, 0, 0) // Set time to 00:00:00 in UTC
@@ -162,6 +186,7 @@ const getAllUsersWithTodayShift = async (currentEducational: string) => {
     totalHours,
     absentCount,
     formattedEvents,
+    allPendingApplications,
   }
 }
 
@@ -358,6 +383,7 @@ const page = async ({ params }: { params: any }) => {
     totalHours,
     absentCount,
     formattedEvents: events,
+    allPendingApplications,
   } = await getAllUsersWithTodayShift(currentEducational)
 
   const {
@@ -537,6 +563,14 @@ const page = async ({ params }: { params: any }) => {
               <AddEvent currentEducational={currentEducational} />
             </div>
             <DataTable columns={eventsColumns} data={events || []} />
+          </div>
+        )}
+        {selection === "leave" && (
+          <div className="flex w-full flex-col  gap-4">
+            <DataTable
+              columns={applicationColumns}
+              data={allPendingApplications || []}
+            />
           </div>
         )}
       </div>
