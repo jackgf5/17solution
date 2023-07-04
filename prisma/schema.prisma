@@ -80,12 +80,13 @@ model Shift {
 }
 
 model Educational {
-  id           String      @id @default(cuid())
-  name         String      @unique
-  coordinate   Coordinate? @relation(fields: [coordinateId], references: [id])
-  users        User[]
-  coordinateId String?     @unique
-  events       Event[]
+  id               String             @id @default(cuid())
+  name             String             @unique
+  coordinate       Coordinate?        @relation(fields: [coordinateId], references: [id])
+  users            User[]
+  coordinateId     String?            @unique
+  events           Event[]
+  leaveApplication leaveApplication[]
 }
 
 model Event {
@@ -103,23 +104,28 @@ model Event {
 }
 
 model Organization {
-  id           String      @id @default(cuid())
-  name         String      @unique
-  coordinate   Coordinate? @relation(fields: [coordinateId], references: [id])
-  users        User[]
-  coordinateId String?     @unique
-  events       Event[]
+  id               String             @id @default(cuid())
+  name             String             @unique
+  coordinate       Coordinate?        @relation(fields: [coordinateId], references: [id])
+  users            User[]
+  coordinateId     String?            @unique
+  events           Event[]
+  leaveApplication leaveApplication[]
 }
 
 model leaveApplication {
-  id        String @id @default(cuid())
-  startDate String
-  endDate   String
-  reason    String
-  daysOff   Int
-  userId    String
-  user      User   @relation(fields: [userId], references: [id])
-  status    Status
+  id             String        @id @default(cuid())
+  startDate      String
+  endDate        String
+  reason         String
+  daysOff        Int
+  userId         String
+  user           User          @relation(fields: [userId], references: [id])
+  educational    Educational?  @relation(fields: [educationalId], references: [id])
+  educationalId  String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  status         Status
 }
 
 model VerificationToken {

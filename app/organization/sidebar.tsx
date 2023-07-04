@@ -3,6 +3,7 @@ import {
   BarChart,
   Calendar,
   CalendarRange,
+  Layers,
   LayoutGrid,
   Library,
   ListMusic,
@@ -84,6 +85,27 @@ export function Sidebar({
               >
                 <CalendarRange className="mr-2 h-4 w-4" />
                 View Events
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        <div className="">
+          <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
+            Leave
+          </h2>
+          <div className="space-y-1">
+            <Button
+              variant={selection === "leave" ? "default" : "ghost"}
+              size="sm"
+              className="w-full justify-start"
+            >
+              <Link
+                className="flex w-full items-center"
+                href={"/organization/leave"}
+              >
+                <Layers className="mr-2 h-4 w-4" />
+                View Applications
               </Link>
             </Button>
           </div>

@@ -4,9 +4,17 @@ import prisma from "@/lib/prisma"
 
 export async function POST(request: Request) {
   const body = await request.json()
-  const { startDate, endDate, daysOff, reason, userId } = body
+  const { startDate, endDate, daysOff, reason, userId, companyName } = body
 
-  if (!userId || !startDate || !endDate || !daysOff || !reason || !userId)
+  if (
+    !userId ||
+    !startDate ||
+    !endDate ||
+    !daysOff ||
+    !reason ||
+    !userId ||
+    !companyName
+  )
     return NextResponse.json({ msg: "Missing Fields" }, { status: 400 })
 
   const allUsersApplications = await prisma.leaveApplication.findMany({
@@ -43,19 +51,53 @@ export async function POST(request: Request) {
     )
   }
 
-  const leaveApplication = await prisma.leaveApplication.create({
-    data: {
-      startDate,
-      endDate,
-      reason,
-      userId,
-      daysOff,
-      status: "AWAITING",
+  const organization = await prisma.organization.findFirst({
+    where: {
+      name: { equals: companyName, mode: "insensitive" },
     },
   })
 
-  return NextResponse.json(
-    { msg: "Application Created", leaveApplication },
-    { status: 200 }
-  )
+  if (organization) {
+    const leaveApplication = await prisma.leaveApplication.create({
+      data: {
+        startDate,
+        endDate,
+        reason,
+        userId,
+        daysOff,
+        status: "AWAITING",
+        organizationId: organization.id,
+      },
+    })
+
+    return NextResponse.json(
+      { msg: "Application Created", leaveApplication },
+      { status: 200 }
+    )
+  }
+
+  const educational = await prisma.educational.findFirst({
+    where: {
+      name: { equals: companyName, mode: "insensitive" },
+    },
+  })
+
+  if (educational) {
+    const leaveApplication = await prisma.leaveApplication.create({
+      data: {
+        startDate,
+        endDate,
+        reason,
+        userId,
+        daysOff,
+        status: "AWAITING",
+        educationalId: educational.id,
+      },
+    })
+
+    return NextResponse.json(
+      { msg: "Application Created", leaveApplication },
+      { status: 200 }
+    )
+  }
 }

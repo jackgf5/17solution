@@ -26,6 +26,7 @@ import { columns } from "../column"
 import { DataTable } from "../data-table"
 import { Sidebar } from "../sidebar"
 import { UserWithShift, allColumns } from "./allColumn"
+import { applicationColumns } from "./applicationColumn"
 import { eventsColumns } from "./eventsColumn"
 
 const getAllUsersWithTodayShift = async (currentOrganization: string) => {
@@ -44,6 +45,31 @@ const getAllUsersWithTodayShift = async (currentOrganization: string) => {
       absentCount: 0,
     }
   const organizationId = organization?.id
+
+  const applicationsWithUser = await prisma.leaveApplication.findMany({
+    where: {
+      organizationId: organization.id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+        },
+      },
+    },
+  })
+
+  console.log("AAP WITH USER", applicationsWithUser)
+
+  const allPendingApplications = applicationsWithUser.map((application) => {
+    return {
+      ...application,
+      username: application.user.username,
+      name: application.user.name,
+    }
+  })
 
   const today = new Date() // Current date
   today.setUTCHours(0, 0, 0, 0) // Set time to 00:00:00 in UTC
@@ -129,6 +155,7 @@ const getAllUsersWithTodayShift = async (currentOrganization: string) => {
     totalHours,
     absentCount,
     formattedEvents,
+    allPendingApplications,
   }
 }
 
@@ -317,6 +344,7 @@ const page = async ({ params }: { params: any }) => {
     totalHours,
     absentCount,
     formattedEvents: events,
+    allPendingApplications,
   } = await getAllUsersWithTodayShift(currentOrganization)
 
   const {
@@ -489,6 +517,14 @@ const page = async ({ params }: { params: any }) => {
               <AddEvent currentOrganization={currentOrganization} />
             </div>
             <DataTable columns={eventsColumns} data={events || []} />
+          </div>
+        )}
+        {selection === "leave" && (
+          <div className="flex w-full flex-col  gap-4">
+            <DataTable
+              columns={applicationColumns}
+              data={allPendingApplications || []}
+            />
           </div>
         )}
       </div>
